@@ -1,0 +1,72 @@
+---
+import { techs, groupByLayer, type Tech, type TechLayer } from '../../data/tech';
+import { useTranslations } from '../../i18n';
+import SectionHeader from '../ui/SectionHeader.astro';
+import TechChip from '../ui/TechChip.astro';
+
+/**
+ * Stack, grouped by architectural layer rather than shown as a wall of logos.
+ *
+ * Only `core` technologies appear in the main groups. `secondary` ones are listed
+ * once, quietly, at the end — real experience, less depth. That split comes from
+ * the audit and is what keeps this section from becoming keyword stuffing.
+ */
+interface Props {
+  locale: string;
+  index?: string;
+}
+
+const { locale, index = '04' } = Astro.props;
+const t = useTranslations(locale);
+
+const all = Object.values(techs) as Tech[];
+const core = groupByLayer(all.filter((tech) => tech.level === 'core'));
+const secondary = all.filter((tech) => tech.level === 'secondary');
+
+const layerLabels: Record<TechLayer, { es: string; en: string }> = {
+  language: { es: 'Lenguajes', en: 'Languages' },
+  backend: { es: 'Backend', en: 'Backend' },
+  database: { es: 'Bases de datos', en: 'Databases' },
+  frontend: { es: 'Frontend', en: 'Frontend' },
+  infra: { es: 'Infraestructura y herramientas', en: 'Infrastructure & tooling' },
+  practice: { es: 'Metodologías y producto', en: 'Practices & product' },
+};
+
+const labelFor = (layer: TechLayer) =>
+  locale === 'en' ? layerLabels[layer].en : layerLabels[layer].es;
+
+const title = locale === 'en' ? 'Stack' : 'Stack';
+const lead =
+  locale === 'en'
+    ? 'Grouped by where each piece sits in a system. The technologies below are the ones I use in real projects.'
+    : 'Agrupado por dónde se ubica cada pieza dentro de un sistema. Lo que está acá es lo que uso en proyectos reales.';
+const secondaryLabel = locale === 'en' ? 'Also worked with' : 'También trabajé con';
+---
+
+<section class="container-page py-16 md:py-24">
+  <SectionHeader index={index} title={title} lead={lead} />
+
+  <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    {core.map((group, i) => (
+      <div class={`reveal reveal-delay-${i % 3}`}>
+        <h3 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">
+          {labelFor(group.layer)}
+        </h3>
+        <div class="mt-4 flex flex-wrap gap-1.5">
+          {group.items.map((tech) => (
+            <TechChip tech={tech} size="sm" />
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {secondary.length > 0 && (
+    <div class="reveal mt-10 border-t border-line pt-8">
+      <h3 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">{secondaryLabel}</h3>
+      <p class="mt-3 text-sm leading-relaxed text-muted">
+        {secondary.map((tech) => tech.name).join(' · ')}
+      </p>
+    </div>
+  )}
+</section>

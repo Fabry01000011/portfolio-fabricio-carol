@@ -1,0 +1,54 @@
+---
+/**
+ * Button — renders an <a> when `href` is given, a <button> otherwise.
+ * Variants map straight onto design tokens; no component defines its own colours.
+ */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'lg';
+  external?: boolean;
+  class?: string;
+  type?: 'button' | 'submit';
+  id?: string;
+  'aria-label'?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  external = false,
+  class: className = '',
+  type = 'button',
+  ...rest
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[background-color,border-color,color,transform] duration-200 active:translate-y-px whitespace-nowrap';
+
+const sizes = {
+  md: 'px-5 py-2.5 text-sm',
+  lg: 'px-6 py-3 text-base',
+};
+
+const variants = {
+  primary: 'bg-accent text-on-accent hover:brightness-110',
+  secondary: 'border border-line bg-surface text-ink hover:border-accent hover:text-accent',
+  ghost: 'text-muted hover:text-accent',
+};
+
+const classes = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{href ? (
+  <a href={href} class={classes} {...externalAttrs} {...rest}>
+    <slot />
+  </a>
+) : (
+  <button type={type} class={classes} {...rest}>
+    <slot />
+  </button>
+)}

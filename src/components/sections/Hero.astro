@@ -1,0 +1,185 @@
+---
+import { useTranslations, localePath } from '../../i18n';
+import { site } from '../../data/site';
+import { cvAvailable, anyCvAvailable } from '../../lib/cv';
+import Button from '../ui/Button.astro';
+import { ArrowRight, FileDown, Mail } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="relative overflow-hidden">
+  <!-- Blueprint dot grid, faded out towards the bottom so text never fights it. -->
+  <div
+    class="dot-grid pointer-events-none absolute inset-0 opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container-page relative py-20 md:py-28 lg:py-36">
+    <div class="max-w-4xl">
+      <p class="hero-item font-mono text-xs tracking-[0.18em] text-accent uppercase md:text-[13px]">
+        {t.hero.eyebrow}
+      </p>
+
+      <h1
+        class="hero-item mt-5 text-[length:var(--text-display)] leading-[1.02] font-semibold"
+        transition:name="hero-title"
+      >
+        {t.hero.title}
+      </h1>
+
+      <p class="hero-item mt-6 max-w-2xl text-[length:var(--text-lead)] leading-relaxed text-muted">
+        {t.hero.subtitle}
+      </p>
+
+      <!-- Availability: stated once, quietly, as a product-style status. -->
+      <p class="hero-item mt-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-4 py-2 text-sm text-muted">
+        <span class="relative flex size-2" aria-hidden="true">
+          <span class="absolute inline-flex size-full animate-ping rounded-full bg-ok opacity-60 motion-reduce:animate-none"></span>
+          <span class="relative inline-flex size-2 rounded-full bg-ok"></span>
+        </span>
+        {t.hero.available}
+      </p>
+
+      <div class="hero-item mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <Button href={localePath(locale, '/projects')} size="lg" class="w-full sm:w-auto">
+          {t.hero.ctaProjects}
+          <ArrowRight size={17} aria-hidden="true" />
+        </Button>
+
+        {anyCvAvailable && (
+          <div class="relative w-full sm:w-auto" data-cv-menu>
+            <button
+              type="button"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-line bg-surface px-6 py-3 text-base font-medium whitespace-nowrap transition-colors hover:border-accent hover:text-accent sm:w-auto"
+              aria-expanded="false"
+              aria-haspopup="true"
+              data-cv-trigger
+            >
+              <FileDown size={17} aria-hidden="true" />
+              {t.hero.ctaCv}
+            </button>
+            <ul
+              class="invisible absolute left-0 top-full z-40 mt-2 w-full min-w-[12rem] rounded-xl border border-line bg-surface p-1.5 opacity-0 shadow-lg transition-[opacity,visibility] duration-150"
+              data-cv-list
+            >
+              {cvAvailable.es && (
+                <li>
+                  <a
+                    href={site.cv.es}
+                    download
+                    class="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-2"
+                  >
+                    {t.hero.cvEs}
+                  </a>
+                </li>
+              )}
+              {cvAvailable.en && (
+                <li>
+                  <a
+                    href={site.cv.en}
+                    download
+                    class="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-surface-2"
+                  >
+                    {t.hero.cvEn}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+
+        <Button
+          href={localePath(locale, '/contact')}
+          variant="ghost"
+          size="lg"
+          class="w-full sm:w-auto"
+        >
+          <Mail size={17} aria-hidden="true" />
+          {t.hero.ctaContact}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Staggered entrance. Runs once on load; `reveal` is not used here because the
+     hero is above the fold and should not wait for an intersection. */
+  .hero-item {
+    animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hero-item:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .hero-item:nth-child(2) {
+    animation-delay: 0.13s;
+  }
+  .hero-item:nth-child(3) {
+    animation-delay: 0.21s;
+  }
+  .hero-item:nth-child(4) {
+    animation-delay: 0.29s;
+  }
+  .hero-item:nth-child(5) {
+    animation-delay: 0.37s;
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-item {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function setupCvMenu() {
+    document.querySelectorAll<HTMLElement>('[data-cv-menu]').forEach((root) => {
+      const trigger = root.querySelector<HTMLButtonElement>('[data-cv-trigger]');
+      const list = root.querySelector<HTMLElement>('[data-cv-list]');
+      if (!trigger || !list) return;
+
+      const close = () => {
+        list.classList.add('invisible', 'opacity-0');
+        trigger.setAttribute('aria-expanded', 'false');
+      };
+
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          close();
+        } else {
+          list.classList.remove('invisible', 'opacity-0');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!root.contains(event.target as Node)) close();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+      });
+    });
+  }
+
+  setupCvMenu();
+  document.addEventListener('astro:page-load', setupCvMenu);
+</script>

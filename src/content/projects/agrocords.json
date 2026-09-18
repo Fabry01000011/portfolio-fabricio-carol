@@ -1,0 +1,73 @@
+{
+  "title": "AgroCordS — Ventana de Aplicación",
+  "tagline": "Herramienta de apoyo a la decisión para definir cuándo pulverizar un lote.",
+  "summary": "Aplicación desarrollada durante una hackathon de 24 horas. Cruza pronóstico meteorológico e información satelital para señalar, dentro de las próximas 72 horas, qué franjas horarias presentan condiciones más adecuadas para una pulverización.",
+  "order": 1,
+  "featured": true,
+  "draft": true,
+  "year": "2026",
+  "status": "Prototipo de hackathon",
+  "categories": ["AgTech", "Datos", "Satelital"],
+  "technologies": ["javascript", "react", "node", "express", "postgresql", "leaflet"],
+  "problem": "Decidir cuándo pulverizar un lote depende de variables que cambian hora a hora: viento, temperatura, humedad y probabilidad de lluvia. Aplicar en la franja equivocada desperdicia producto, puede dañar el cultivo y genera deriva hacia lotes vecinos. La información existe, pero está dispersa en distintas fuentes y no está expresada en términos de la decisión concreta que hay que tomar.",
+  "solution": "Una aplicación que toma el pronóstico por hora e información satelital del lote, y las traduce a una lectura simple: qué ventanas de las próximas 72 horas son adecuadas, cuáles son marginales y cuáles conviene descartar. El criterio cambia según el tipo de producto, porque un sistémico y uno de contacto no toleran las mismas condiciones.",
+  "role": "Pendiente de completar.",
+  "features": [
+    {
+      "title": "Ventanas de aplicación a 72 horas",
+      "description": "Las franjas horarias se clasifican según las condiciones previstas para cada una."
+    },
+    {
+      "title": "Análisis por lote",
+      "description": "Cada lote se evalúa con su ubicación y su situación propia."
+    },
+    {
+      "title": "Índices de vegetación",
+      "description": "NDVI y NDRE a partir de imágenes Sentinel-2 para observar el estado del cultivo."
+    },
+    {
+      "title": "Mapa de lotes",
+      "description": "Visualización geoespacial de los lotes y su estado."
+    },
+    {
+      "title": "Alertas de condiciones",
+      "description": "Aviso cuando las condiciones previstas desaconsejan la aplicación."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "La herramienta acompaña la decisión, no la reemplaza",
+      "description": "El resultado es un insumo para el criterio del profesional agronómico, que es quien decide. Esto está explícito en la interfaz: una recomendación automática presentada como certeza sería un problema, no una función."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "ui", "label": "Interfaz", "kind": "frontend", "description": "Mapa y ventanas" },
+      { "id": "api", "label": "API", "kind": "api" },
+      { "id": "scoring", "label": "Evaluación", "kind": "service", "description": "Clasifica las franjas" },
+      { "id": "db", "label": "Base de datos", "kind": "database", "description": "Lotes y consultas" },
+      { "id": "weather", "label": "Datos meteorológicos", "kind": "external", "description": "Pronóstico por hora" },
+      { "id": "sat", "label": "Sentinel-2", "kind": "external", "description": "NDVI · NDRE" }
+    ],
+    "edges": [
+      { "from": "ui", "to": "api" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "scoring" },
+      { "from": "scoring", "to": "weather" },
+      { "from": "scoring", "to": "sat" }
+    ],
+    "note": "Diagrama de referencia: confirmar contra la implementación real del prototipo."
+  },
+  "gallery": [],
+  "links": { "extra": [] },
+  "repoStatus": "none",
+  "aeon": false,
+  "i18n": {
+    "en": {
+      "tagline": "Decision support tool for choosing when to spray a field.",
+      "summary": "Application built during a 24-hour hackathon. It combines weather forecasting and satellite data to highlight which time windows over the next 72 hours offer the most suitable conditions for spraying.",
+      "role": "To be completed."
+    }
+  }
+}

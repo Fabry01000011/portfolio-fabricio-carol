@@ -1,0 +1,74 @@
+---
+import { localiseExperience, type Experience } from '../../lib/content';
+import { resolveTechs } from '../../data/tech';
+import TechChip from '../ui/TechChip.astro';
+
+/**
+ * Experience timeline. Commercial roles are rendered in a quieter style so the
+ * developer identity stays in front without hiding the sales background.
+ */
+interface Props {
+  entries: Experience[];
+  locale: string;
+  /** `compact` omits responsibilities; used on the home page. */
+  variant?: 'full' | 'compact';
+}
+
+const { entries, locale, variant = 'full' } = Astro.props;
+---
+
+<ol class="relative mt-10">
+  {entries.map((entry, i) => {
+    const data = localiseExperience(entry, locale);
+    const techs = resolveTechs(data.technologies);
+    const isCommercial = data.kind === 'commercial';
+
+    return (
+      <li
+        class={`reveal reveal-delay-${i % 3} relative border-l border-line pb-10 pl-6 last:pb-0 md:pl-8`}
+      >
+        {/* Timeline marker: filled for the current role, outlined otherwise. */}
+        <span
+          class:list={[
+            'absolute -left-[5px] top-1.5 size-2.5 rounded-full border-2',
+            data.current ? 'border-ok bg-ok' : 'border-line bg-bg',
+          ]}
+          aria-hidden="true"
+        />
+
+        <p class="font-mono text-xs tracking-wider text-muted uppercase">{data.period}</p>
+
+        <h3
+          class:list={[
+            'font-display mt-2 font-semibold',
+            isCommercial ? 'text-base' : 'text-lg md:text-xl',
+          ]}
+        >
+          {data.role}
+        </h3>
+        <p class="mt-1 text-sm font-medium text-accent">{data.organisation}</p>
+
+        <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{data.summary}</p>
+
+        {variant === 'full' && data.highlights.length > 0 && (
+          <ul class="mt-4 max-w-2xl space-y-2">
+            {data.highlights.map((item) => (
+              <li class="flex gap-2.5 text-sm leading-relaxed text-muted">
+                <span class="mt-2 size-1 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {variant === 'full' && techs.length > 0 && (
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            {techs.map((tech) => (
+              <TechChip tech={tech} size="sm" />
+            ))}
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ol>

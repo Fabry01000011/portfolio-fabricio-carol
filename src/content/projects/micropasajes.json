@@ -1,0 +1,82 @@
+{
+  "title": "Micropasajes",
+  "tagline": "Venta y administración de pasajes de larga distancia, con selección de asientos.",
+  "summary": "Sistema de reserva y venta de pasajes para empresas de transporte de pasajeros. El viajero elige su asiento sobre el plano real del micro y la empresa administra rutas, disponibilidad y pasajeros desde un panel. Desarrollado para PatyBus / El Delfín Turismo.",
+  "order": 6,
+  "featured": false,
+  "draft": true,
+  "year": "2025 — 2026",
+  "client": "PatyBus / El Delfín Turismo",
+  "status": "En uso por el cliente",
+  "categories": ["Aplicación web", "Transacciones", "Gestión"],
+  "technologies": ["javascript", "html", "css", "node", "mysql", "mercadopago"],
+  "problem": "Una empresa de transporte que vende pasajes por teléfono y planilla enfrenta siempre el mismo riesgo: vender dos veces el mismo asiento. Además, nadie sabe la ocupación real de un servicio hasta que sale, y la información de los pasajeros queda en papel o en un archivo suelto.",
+  "solution": "Un sistema donde el asiento se elige sobre el plano real del micro, con sus dos pisos y el estado de cada butaca a la vista. Al confirmar, el asiento queda tomado. La empresa administra rutas, horarios y precios, consulta la ocupación de cada servicio y accede al registro de pasajeros.",
+  "role": "Desarrollo del sistema: modelo de datos, backend, lógica de disponibilidad de asientos y panel de administración.",
+  "features": [
+    {
+      "title": "Selección de asientos sobre el plano real",
+      "description": "Los dos pisos del micro, con el estado de cada butaca: disponible, reservada o vendida."
+    },
+    {
+      "title": "Reserva con seña o pago total",
+      "description": "El pasajero puede asegurar el asiento con una seña o pagar el pasaje completo."
+    },
+    {
+      "title": "Gestión de rutas y horarios",
+      "description": "Alta de servicios con origen, destino, horario de salida y precio."
+    },
+    {
+      "title": "Registro de pasajeros",
+      "description": "Datos del viajero asociados a su asiento y a su servicio."
+    },
+    {
+      "title": "Panel de administración",
+      "description": "Ocupación por servicio, gestión de butacas e historial de operaciones."
+    },
+    {
+      "title": "Adaptado a cada cliente",
+      "description": "La configuración de la flota y las rutas se ajusta a la operación de cada empresa."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "El plano del micro es dato, no imagen",
+      "description": "La distribución de butacas se describe en la configuración, así que una flota con otra disposición no exige rehacer la interfaz."
+    },
+    {
+      "title": "Dos versiones con distinto propósito",
+      "description": "Existe una demo pública que funciona sin backend, para mostrar el flujo completo sin exponer datos, y la versión que usa el cliente, con base de datos y backend reales."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "web", "label": "Sitio de venta", "kind": "client", "description": "Elección de asiento" },
+      { "id": "admin", "label": "Panel de administración", "kind": "frontend", "description": "Rutas y pasajeros" },
+      { "id": "api", "label": "Backend", "kind": "api" },
+      { "id": "db", "label": "Base de datos", "kind": "database", "description": "Servicios · asientos · pasajeros" },
+      { "id": "pay", "label": "Cobro", "kind": "external", "description": "Seña o pago total" }
+    ],
+    "edges": [
+      { "from": "web", "to": "api", "label": "reserva" },
+      { "from": "admin", "to": "api", "label": "administra" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "pay" }
+    ]
+  },
+  "gallery": [],
+  "links": {
+    "demo": "https://micropasajes.netlify.app/",
+    "extra": []
+  },
+  "repoStatus": "client",
+  "aeon": true,
+  "i18n": {
+    "en": {
+      "tagline": "Long-distance ticket sales and management, with seat selection.",
+      "summary": "Booking and ticketing system for passenger transport companies. Travellers pick their seat on the real coach layout, and the company manages routes, availability and passengers from an admin panel. Built for PatyBus / El Delfín Turismo.",
+      "role": "System development: data model, backend, seat availability logic and admin panel."
+    }
+  }
+}

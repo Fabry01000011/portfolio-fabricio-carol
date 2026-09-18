@@ -1,0 +1,10 @@
+---
+import HomePage from '../../components/pages/HomePage.astro';
+import { nonDefaultLocalePaths } from '../../lib/routes';
+
+export const getStaticPaths = nonDefaultLocalePaths;
+
+const { locale } = Astro.params;
+---
+
+<HomePage locale={locale!} />

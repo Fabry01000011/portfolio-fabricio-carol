@@ -1,0 +1,100 @@
+{
+  "title": "Puerta a Puerta X",
+  "tagline": "Plataforma de delivery local con cinco roles, pagos y seguimiento en tiempo real.",
+  "summary": "Aplicación de delivery que conecta clientes, comercios, cadetes, embajadores y administradores. Incluye pagos con Mercado Pago, asignación de repartidores, notificaciones push y app nativa.",
+  "order": 3,
+  "featured": true,
+  "draft": true,
+  "year": "2026",
+  "status": "En desarrollo",
+  "categories": ["Marketplace", "Pagos", "Tiempo real", "Mobile"],
+  "technologies": [
+    "javascript",
+    "node",
+    "express",
+    "postgresql",
+    "supabase",
+    "mercadopago",
+    "capacitor",
+    "leaflet",
+    "githubactions",
+    "railway",
+    "vercel"
+  ],
+  "problem": "En ciudades donde las plataformas grandes de delivery no llegan o cobran comisiones que un comercio chico no puede absorber, los pedidos se coordinan por WhatsApp y los repartos se reparten a mano. No hay trazabilidad del pedido, ni control de las comisiones, ni forma de saber qué cadete está libre.",
+  "solution": "Una plataforma donde cada rol tiene su propio panel: el cliente pide, el comercio gestiona su menú y acepta pedidos, el cadete recibe ofertas de entrega y actualiza su posición, el embajador capta comercios y cobra su comisión, y el administrador supervisa todo. Los pagos pasan por Mercado Pago con confirmación por webhook firmado.",
+  "role": "Desarrollo backend y de base de datos: endpoints de la API, modelo de datos, reglas de comisiones y lógica de asignación de repartidores.",
+  "features": [
+    {
+      "title": "Cinco roles con paneles propios",
+      "description": "Cliente, comercio, cadete, embajador y administración, cada uno con sus permisos."
+    },
+    {
+      "title": "Pagos con Mercado Pago",
+      "description": "Preferencias de pago y confirmación por webhook con firma verificada."
+    },
+    {
+      "title": "Asignación de repartidores",
+      "description": "Ofertas de entrega por zona, con rotación para repartir el trabajo de forma pareja."
+    },
+    {
+      "title": "Seguimiento en mapa",
+      "description": "Posición del cadete en tiempo real durante la entrega."
+    },
+    {
+      "title": "Notificaciones push",
+      "description": "Avisos de estado del pedido en web y en la app nativa."
+    },
+    {
+      "title": "Programa de embajadores",
+      "description": "Comisiones automáticas por cada comercio captado, con su propio panel y billetera."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Seguridad a nivel de fila en la base de datos",
+      "description": "Las políticas de acceso viven en la base, no solo en la API. Un rol no puede leer los datos de otro aunque una consulta se escriba mal."
+    },
+    {
+      "title": "El webhook de pagos verifica la firma",
+      "description": "Sin esa verificación, cualquiera que conozca la URL podría marcar un pedido como pagado."
+    },
+    {
+      "title": "La ciudad es texto libre, no una lista cerrada",
+      "description": "Decisión deliberada: sumar una ciudad nueva no debe exigir una migración de base de datos."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "app", "label": "App cliente", "kind": "client", "description": "Web y nativa" },
+      { "id": "panels", "label": "Paneles por rol", "kind": "frontend", "description": "Comercio · cadete · admin" },
+      { "id": "api", "label": "API", "kind": "api", "description": "Node · Express" },
+      { "id": "db", "label": "Base de datos", "kind": "database", "description": "PostgreSQL" },
+      { "id": "realtime", "label": "Tiempo real", "kind": "service", "description": "Estados y posición" },
+      { "id": "pay", "label": "Mercado Pago", "kind": "external", "description": "Pagos y webhook" },
+      { "id": "push", "label": "Notificaciones", "kind": "external", "description": "Push" }
+    ],
+    "edges": [
+      { "from": "app", "to": "api" },
+      { "from": "panels", "to": "api" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "pay", "label": "cobra" },
+      { "from": "pay", "to": "api", "label": "webhook" },
+      { "from": "db", "to": "realtime" },
+      { "from": "realtime", "to": "app", "label": "estado" },
+      { "from": "api", "to": "push" }
+    ]
+  },
+  "gallery": [],
+  "links": { "extra": [] },
+  "repoStatus": "private",
+  "aeon": true,
+  "i18n": {
+    "en": {
+      "tagline": "Local delivery platform with five roles, payments and real-time tracking.",
+      "summary": "A delivery application connecting customers, shops, couriers, ambassadors and administrators. It includes Mercado Pago payments, courier assignment, push notifications and a native app.",
+      "role": "Backend and database development: API endpoints, data model, commission rules and courier assignment logic."
+    }
+  }
+}

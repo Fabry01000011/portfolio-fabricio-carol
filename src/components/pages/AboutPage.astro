@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import Gallery from '../ui/Gallery.astro';
+import Skills from '../sections/Skills.astro';
+import Approach from '../sections/Approach.astro';
+import Button from '../ui/Button.astro';
+import { useTranslations, localePath } from '../../i18n';
+import { localisePage } from '../../lib/content';
+import { site } from '../../data/site';
+import { cvFor } from '../../lib/cv';
+import { breadcrumbSchema } from '../../lib/schema';
+import { FileDown, ArrowRight, UserRound } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const entry = await getEntry('pages', 'about');
+const data = entry ? localisePage(entry, locale) : undefined;
+const origin = Astro.site?.origin ?? '';
+const cvHref = cvFor(locale);
+---
+
+<BaseLayout
+  title={t.meta.aboutTitle}
+  description={t.meta.aboutDescription}
+  path="/about"
+  locale={locale}
+  schema={breadcrumbSchema(origin, [
+    { name: t.nav.home, path: '/' },
+    { name: t.meta.aboutTitle, path: '/about' },
+  ])}
+>
+  <div class="container-page py-14 md:py-20">
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+      <div class="min-w-0">
+        <SectionHeader index="01" title={data?.title ?? t.about.sectionTitle} as="h1" />
+
+        <div class="mt-8 space-y-5">
+          {data?.body.map((paragraph, i) => (
+            <p class={`reveal reveal-delay-${i % 3} max-w-2xl leading-relaxed text-muted`}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
+
+        <div class="reveal mt-9 flex flex-wrap gap-3">
+          {cvHref && (
+            <Button href={cvHref} download>
+              <FileDown size={16} aria-hidden="true" />
+              {t.experience.downloadCv}
+            </Button>
+          )}
+          <Button href={localePath(locale, '/experience')} variant="secondary">
+            {t.experience.viewAll}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Button>
+        </div>
+      </div>
+
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <!-- Portrait: uploaded from the admin panel. Until then, a neutral frame
+             rather than a stock photo. -->
+        <div class="overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface-2">
+          {data?.portrait ? (
+            <Image
+              src={data.portrait}
+              alt={data.portraitAlt ?? site.fullName}
+              widths={[350, 700]}
+              sizes="(min-width: 1024px) 350px, 100vw"
+              class="aspect-[4/5] size-full object-cover"
+              loading="eager"
+            />
+          ) : (
+            <div class="dot-grid flex aspect-[4/5] flex-col items-center justify-center gap-2 text-muted">
+              <UserRound size={28} aria-hidden="true" />
+              <span class="font-mono text-[11px]">{site.name}</span>
+            </div>
+          )}
+        </div>
+
+        {data && data.facts.length > 0 && (
+          <dl class="reveal mt-6 space-y-4 rounded-[var(--radius-card)] border border-line bg-surface p-5">
+            {data.facts.map((fact) => (
+              <div>
+                <dt class="font-mono text-[11px] tracking-wider text-muted uppercase">
+                  {fact.label}
+                </dt>
+                <dd class="mt-1 text-sm">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </aside>
+    </div>
+  </div>
+
+  <!-- Photo gallery: images the owner uploads from the admin panel. -->
+  <section class="container-page py-8 md:py-12">
+    <h2 class="reveal font-display text-[length:var(--text-h3)] font-semibold">
+      {t.about.galleryTitle}
+    </h2>
+    <div class="mt-6">
+      <Gallery
+        items={data?.gallery ?? []}
+        emptyTitle={t.about.galleryPending}
+        closeLabel={t.project.closeImage}
+        columns={3}
+      />
+    </div>
+  </section>
+
+  <Approach locale={locale} index="02" />
+  <Skills locale={locale} index="03" />
+</BaseLayout>

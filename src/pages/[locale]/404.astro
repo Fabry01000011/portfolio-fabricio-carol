@@ -1,0 +1,15 @@
+---
+import NotFoundPage from '../../components/pages/NotFoundPage.astro';
+import { nonDefaultLocalePaths } from '../../lib/routes';
+
+/**
+ * Localised 404 pages. The host only serves the root 404.html for unmatched
+ * routes, but these exist so the language switcher on a 404 has a real target
+ * in every locale instead of a dead link.
+ */
+export const getStaticPaths = nonDefaultLocalePaths;
+
+const { locale } = Astro.params;
+---
+
+<NotFoundPage locale={locale!} />

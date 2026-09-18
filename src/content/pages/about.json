@@ -1,0 +1,39 @@
+{
+  "title": "Sobre mí",
+  "body": [
+    "Soy Técnico Superior en Desarrollo de Software, formado en el Instituto Tecnológico de Santiago del Estero. Trabajo en desarrollo desde 2020, primero con proyectos propios y clientes particulares, después en el sector público y hoy también sobre plataformas empresariales.",
+    "Me dedico sobre todo al backend: APIs, modelos de datos y la lógica que sostiene un sistema por dentro. Esa es la parte que más me interesa, porque es donde se decide si algo va a aguantar el uso real o se va a romper al primer caso raro.",
+    "Pasé por dos dependencias del Gobierno de Santiago del Estero, donde desarrollé un sistema de gestión desde cero y trabajé sobre otro que ya estaba en producción. Esa combinación me enseñó algo que no se aprende en un proyecto propio: entender código ajeno y cambiarlo sin romper lo que ya funciona es tan importante como escribirlo bien la primera vez.",
+    "Después trabajé como analista sobre una plataforma financiera transaccional, revisando incidencias, validando datos y verificando reglas de negocio. Ahí terminé de entender por qué me importa tanto el modelo de datos: cuando la información es inconsistente, el problema nunca está solo en el código.",
+    "Antes de dedicarme por completo al desarrollo trabajé dos años vendiendo tecnología, cara a cara. No lo menciono como anécdota: aprendí a escuchar a alguien que no sabe explicar técnicamente lo que necesita y a llegar igual al problema real. Es exactamente lo que hace falta cuando un cliente pide un sistema.",
+    "Hoy combino mi trabajo como developer con ÆON Software Solutions, donde desarrollamos software para clientes junto a mis socios."
+  ],
+  "facts": [
+    { "label": "Formación", "value": "Técnico Superior en Desarrollo de Software (ITSE)" },
+    { "label": "Base", "value": "Córdoba, Argentina" },
+    { "label": "Desarrollando desde", "value": "2020" },
+    { "label": "Idiomas", "value": "Español nativo · Inglés intermedio · Portugués intermedio" }
+  ],
+  "gallery": [],
+  "services": [],
+  "steps": [],
+  "i18n": {
+    "en": {
+      "title": "About me",
+      "body": [
+        "I am a Software Development Technician, trained at the Instituto Tecnológico de Santiago del Estero. I have been building software since 2020: first my own projects and private clients, then the public sector, and now enterprise platforms as well.",
+        "I work mostly on the backend: APIs, data models and the logic that holds a system together underneath. That is the part I care about most, because it decides whether something survives real usage or breaks on the first unusual case.",
+        "I spent two years across two departments of the Government of Santiago del Estero, where I built one management system from scratch and worked on another that was already in production. That combination taught me something a personal project never does: understanding someone else's code and changing it without breaking what already works matters as much as writing it well the first time.",
+        "I then worked as an analyst on a transactional financial platform, reviewing incidents, validating data and verifying business rules. That is where I fully understood why the data model matters so much: when the information is inconsistent, the problem is never only in the code.",
+        "Before moving fully into development I spent two years selling technology face to face. I do not mention it as trivia: I learned to listen to someone who cannot describe their problem in technical terms and still get to what they actually need. That is exactly what a client asking for a system requires.",
+        "Today I combine my work as a developer with ÆON Software Solutions, where my partners and I build software for clients."
+      ],
+      "facts": [
+        { "label": "Education", "value": "Software Development Technician (ITSE)" },
+        { "label": "Based in", "value": "Córdoba, Argentina" },
+        { "label": "Building since", "value": "2020" },
+        { "label": "Languages", "value": "Native Spanish · Intermediate English · Intermediate Portuguese" }
+      ]
+    }
+  }
+}

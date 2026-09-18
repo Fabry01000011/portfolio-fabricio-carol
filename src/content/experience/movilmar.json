@@ -1,0 +1,30 @@
+{
+  "role": "Vendedor y Asesor de Productos Tecnológicos",
+  "organisation": "Movilmar",
+  "period": "Febrero 2021 — Febrero 2023",
+  "startDate": "2021-02",
+  "location": "Buenos Aires, Argentina",
+  "summary": "Venta consultiva de productos tecnológicos y atención al cliente, con gestión del canal de venta online.",
+  "highlights": [
+    "Asesoramiento orientado a la necesidad real del cliente, no al producto de mayor margen.",
+    "Gestión integral de la venta online: publicaciones, precios y seguimiento.",
+    "Diagnóstico y reparación básica de equipos.",
+    "Organización y control de stock."
+  ],
+  "technologies": [],
+  "kind": "commercial",
+  "current": false,
+  "i18n": {
+    "en": {
+      "role": "Technology Sales Advisor",
+      "period": "February 2021 — February 2023",
+      "summary": "Consultative sales of technology products and customer service, including management of the online sales channel.",
+      "highlights": [
+        "Advice driven by what the customer actually needed, not by the highest-margin product.",
+        "End-to-end management of the online sales channel: listings, pricing and follow-up.",
+        "Diagnosis and basic repair of devices.",
+        "Stock organisation and control."
+      ]
+    }
+  }
+}

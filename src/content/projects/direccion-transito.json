@@ -1,0 +1,75 @@
+{
+  "title": "Sistema de gestión — Dirección de Tránsito y Transporte",
+  "tagline": "Permisos, habilitaciones y expedientes de transporte urbano en un solo sistema.",
+  "summary": "Sistema de gestión de taxis y habilitaciones de la Dirección de Tránsito Municipal. Trabajé sobre un sistema ya existente: actualización, optimización y mejoras funcionales de los módulos administrativos.",
+  "order": 5,
+  "featured": false,
+  "draft": true,
+  "year": "2024 — 2025",
+  "client": "Dirección de Tránsito Municipal, Santiago del Estero",
+  "status": "En producción en servidores del organismo",
+  "categories": ["Backend", "Datos", "Sector público"],
+  "technologies": ["javascript", "node", "express", "mysql", "sql", "linux"],
+  "problem": "La Dirección administra permisos de transporte urbano, habilitaciones de vehículos y conductores, y las prórrogas de cada permiso. Cada trámite involucra un expediente, un titular, un vehículo y un chofer, y los datos estaban repartidos entre módulos que no siempre conversaban entre sí. Consultar el estado de un permiso obligaba a cruzar información a mano.",
+  "solution": "Trabajo sobre el sistema existente para centralizar la gestión: carga unificada del trámite con sus cuatro partes, búsqueda de permisos por número, expediente o documento del titular, y consulta del historial de un permiso con sus prórrogas.",
+  "role": "Mantenimiento evolutivo y mejoras del sistema: optimización de consultas, corrección de errores y desarrollo de mejoras funcionales sobre los módulos administrativos.",
+  "features": [
+    {
+      "title": "Carga unificada de trámites",
+      "description": "Expediente, titular, vehículo y chofer en un solo formulario."
+    },
+    {
+      "title": "Búsqueda de permisos",
+      "description": "Por número de permiso, número de expediente o documento del titular."
+    },
+    {
+      "title": "Prórrogas",
+      "description": "Extensión de permisos vigentes con registro del trámite."
+    },
+    {
+      "title": "Historial de permisos",
+      "description": "Trazabilidad de los trámites procesados."
+    },
+    {
+      "title": "Consultas administrativas",
+      "description": "Acceso rápido a la situación de un permiso para atención al público."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Trabajar sobre un sistema heredado",
+      "description": "La mayor parte del esfuerzo no fue escribir código nuevo sino entender el existente: qué hacía cada módulo, qué reglas estaban implícitas y qué podía romperse al tocarlo. Es la clase de trabajo que no se ve en el resultado pero determina si el sistema sigue funcionando."
+    },
+    {
+      "title": "Optimización de consultas",
+      "description": "Las pantallas de consulta son las más usadas por el personal de atención. Mejorar sus consultas tuvo más impacto en el uso diario que cualquier funcionalidad nueva."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "panel", "label": "Panel administrativo", "kind": "frontend", "description": "Carga y consultas" },
+      { "id": "api", "label": "Backend", "kind": "api" },
+      { "id": "db", "label": "Base de datos", "kind": "database", "description": "Permisos · expedientes" },
+      { "id": "server", "label": "Servidor del organismo", "kind": "service" }
+    ],
+    "edges": [
+      { "from": "panel", "to": "api" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "server", "label": "corre en" }
+    ],
+    "note": "Diagrama simplificado: confirmar contra la arquitectura real del sistema heredado."
+  },
+  "gallery": [],
+  "links": { "extra": [] },
+  "repoStatus": "institutional",
+  "aeon": false,
+  "i18n": {
+    "en": {
+      "title": "Management system — Traffic and Transport Department",
+      "tagline": "Permits, licences and case files for urban transport in a single system.",
+      "summary": "Taxi and licensing management system for the Municipal Traffic Department. I worked on an existing system: updates, optimisation and functional improvements to its administrative modules.",
+      "role": "Maintenance and improvement of the system: query optimisation, bug fixing and new functionality across the administrative modules."
+    }
+  }
+}

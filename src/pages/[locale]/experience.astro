@@ -1,0 +1,10 @@
+---
+import ExperiencePage from '../../components/pages/ExperiencePage.astro';
+import { nonDefaultLocalePaths } from '../../lib/routes';
+
+export const getStaticPaths = nonDefaultLocalePaths;
+
+const { locale } = Astro.params;
+---
+
+<ExperiencePage locale={locale!} />

@@ -1,0 +1,161 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import ProjectCard from '../project/ProjectCard.astro';
+import Button from '../ui/Button.astro';
+import { useTranslations } from '../../i18n';
+import { localisePage, getAeonProjects } from '../../lib/content';
+import { aeon, whatsappLink } from '../../data/site';
+import { breadcrumbSchema } from '../../lib/schema';
+import {
+  Database,
+  Layout,
+  ShoppingCart,
+  Plug,
+  Zap,
+  Wrench,
+  MessageCircle,
+  Mail,
+} from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const entry = await getEntry('pages', 'aeon');
+const data = entry ? localisePage(entry, locale) : undefined;
+const cases = await getAeonProjects();
+const origin = Astro.site?.origin ?? '';
+
+/** Icon names come from the content file, so the CMS never stores a component. */
+const icons: Record<string, typeof Database> = {
+  database: Database,
+  layout: Layout,
+  'shopping-cart': ShoppingCart,
+  plug: Plug,
+  zap: Zap,
+  wrench: Wrench,
+};
+---
+
+<BaseLayout
+  title={t.meta.aeonTitle}
+  description={t.meta.aeonDescription}
+  path="/aeon"
+  locale={locale}
+  schema={breadcrumbSchema(origin, [
+    { name: t.nav.home, path: '/' },
+    { name: aeon.nameAscii, path: '/aeon' },
+  ])}
+>
+  <!-- Hero -->
+  <header class="relative overflow-hidden border-b border-line">
+    <div
+      class="dot-grid pointer-events-none absolute inset-0 opacity-50 [mask-image:linear-gradient(to_bottom,black,transparent)]"
+      aria-hidden="true"
+    ></div>
+    <div class="container-page relative py-16 md:py-24">
+      <div class="max-w-3xl">
+        <p class="font-mono text-xs tracking-[0.2em] text-accent uppercase">Software Solutions</p>
+        <h1 class="mt-4 text-[length:var(--text-display)] leading-[1.05]">{aeon.name}</h1>
+        <div class="mt-6 space-y-4">
+          {data?.body.map((paragraph) => (
+            <p class="max-w-2xl text-[length:var(--text-lead)] leading-relaxed text-muted">
+              {paragraph}
+            </p>
+          ))}
+        </div>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Button href={whatsappLink(aeon.whatsapp, t.aeon.whatsappMessage)} size="lg" external>
+            <MessageCircle size={17} aria-hidden="true" />
+            {t.aeon.ctaWhatsapp}
+          </Button>
+          <Button href={`mailto:${aeon.email}`} variant="secondary" size="lg">
+            <Mail size={17} aria-hidden="true" />
+            {t.contact.emailLabel}
+          </Button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Services -->
+  {data && data.services.length > 0 && (
+    <section class="container-page py-16 md:py-24">
+      <SectionHeader index="01" title={t.aeon.servicesTitle} />
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {data.services.map((service, i) => {
+          const Icon = icons[service.icon ?? ''] ?? Layout;
+          return (
+            <article
+              class={`reveal reveal-delay-${i % 3} rounded-[var(--radius-card)] border border-line bg-surface p-6`}
+            >
+              <span
+                class="flex size-11 items-center justify-center rounded-xl bg-accent-soft text-accent"
+                aria-hidden="true"
+              >
+                <Icon size={20} />
+              </span>
+              <h3 class="font-display mt-5 text-base font-semibold">{service.title}</h3>
+              <p class="mt-2.5 text-sm leading-relaxed text-muted">{service.description}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+  <!-- Process -->
+  {data && data.steps.length > 0 && (
+    <section class="border-y border-line bg-surface-2">
+      <div class="container-page py-16 md:py-24">
+        <SectionHeader index="02" title={t.aeon.processTitle} />
+        <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {data.steps.map((step, i) => (
+            <li class={`reveal reveal-delay-${i % 3}`}>
+              <span class="font-display block text-3xl font-semibold text-accent/25">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 class="font-display mt-3 text-base font-semibold">{step.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted">{step.description}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <!-- Cases -->
+  {cases.length > 0 && (
+    <section class="container-page py-16 md:py-24">
+      <SectionHeader index="03" title={t.aeon.casesTitle} />
+      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {cases.map((project) => (
+          <ProjectCard project={project} locale={locale} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Closing CTA -->
+  <section class="container-page pb-20 md:pb-28">
+    <div class="reveal rounded-[var(--radius-card)] border border-line bg-surface p-8 text-center md:p-14">
+      <h2 class="font-display text-[length:var(--text-h2)] leading-tight">{t.aeon.ctaTitle}</h2>
+      <p class="mx-auto mt-4 max-w-xl leading-relaxed text-muted">{t.aeon.ctaBody}</p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <Button href={whatsappLink(aeon.whatsapp, t.aeon.whatsappMessage)} size="lg" external>
+          <MessageCircle size={17} aria-hidden="true" />
+          {aeon.whatsappDisplay}
+        </Button>
+        <Button href={`mailto:${aeon.email}`} variant="secondary" size="lg">
+          <Mail size={17} aria-hidden="true" />
+          {aeon.email}
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

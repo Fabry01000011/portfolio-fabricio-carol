@@ -1,0 +1,93 @@
+---
+import { LOCALES, LOCALE_NAMES, COMPLETE_LOCALES, localePath } from '../../i18n';
+import { Languages, Check } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+  /** Canonical route, so switching language keeps the visitor on the same page. */
+  path: string;
+  label: string;
+}
+
+const { locale, path, label } = Astro.props;
+---
+
+<div class="relative" data-language-switcher>
+  <button
+    type="button"
+    class="inline-flex h-10 items-center gap-1.5 rounded-full px-2.5 text-muted transition-colors hover:text-accent"
+    aria-label={label}
+    aria-expanded="false"
+    aria-haspopup="true"
+    data-language-trigger
+  >
+    <Languages size={18} aria-hidden="true" />
+    <span class="font-mono text-xs uppercase">{locale}</span>
+  </button>
+
+  <ul
+    class="invisible absolute right-0 top-full z-50 mt-2 w-44 rounded-xl border border-line bg-surface p-1.5 opacity-0 shadow-lg transition-[opacity,visibility] duration-150"
+    data-language-menu
+    role="menu"
+  >
+    {LOCALES.map((l) => (
+      <li role="none">
+        <a
+          href={localePath(l, path)}
+          role="menuitem"
+          hreflang={l}
+          class:list={[
+            'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
+            l === locale ? 'text-accent font-medium' : 'text-ink hover:bg-surface-2',
+          ]}
+          aria-current={l === locale ? 'true' : undefined}
+        >
+          <span>
+            {LOCALE_NAMES[l]}
+            {!COMPLETE_LOCALES.includes(l) && (
+              <span class="ml-1.5 font-mono text-[10px] text-muted">beta</span>
+            )}
+          </span>
+          {l === locale && <Check size={14} aria-hidden="true" />}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  function setupLanguageSwitcher() {
+    document.querySelectorAll<HTMLElement>('[data-language-switcher]').forEach((root) => {
+      const trigger = root.querySelector<HTMLButtonElement>('[data-language-trigger]');
+      const menu = root.querySelector<HTMLElement>('[data-language-menu]');
+      if (!trigger || !menu) return;
+
+      const close = () => {
+        menu.classList.add('invisible', 'opacity-0');
+        trigger.setAttribute('aria-expanded', 'false');
+      };
+
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          close();
+        } else {
+          menu.classList.remove('invisible', 'opacity-0');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!root.contains(event.target as Node)) close();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') close();
+      });
+    });
+  }
+
+  setupLanguageSwitcher();
+  document.addEventListener('astro:page-load', setupLanguageSwitcher);
+</script>

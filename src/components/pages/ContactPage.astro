@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactSection from '../sections/ContactSection.astro';
+import { useTranslations } from '../../i18n';
+import { breadcrumbSchema } from '../../lib/schema';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const origin = Astro.site?.origin ?? '';
+---
+
+<BaseLayout
+  title={t.meta.contactTitle}
+  description={t.meta.contactDescription}
+  path="/contact"
+  locale={locale}
+  schema={breadcrumbSchema(origin, [
+    { name: t.nav.home, path: '/' },
+    { name: t.meta.contactTitle, path: '/contact' },
+  ])}
+>
+  <div class="py-6 md:py-10">
+    <ContactSection locale={locale} index="01" as="h1" />
+  </div>
+</BaseLayout>

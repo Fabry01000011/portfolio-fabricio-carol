@@ -1,0 +1,40 @@
+---
+import type { Tech, TechLayer } from '../../data/tech';
+
+/**
+ * A technology shown as a labelled chip with a layer-coloured dot.
+ * Deliberately not a logo: a wall of brand logos says nothing about depth.
+ */
+interface Props {
+  tech: Tech;
+  size?: 'sm' | 'md';
+}
+
+const { tech, size = 'md' } = Astro.props;
+
+/** One hue per architectural layer, so the same colour always means the same thing. */
+const layerColour: Record<TechLayer, string> = {
+  language: '#2f55ff',
+  backend: '#7c3aed',
+  database: '#0d9488',
+  frontend: '#ea580c',
+  infra: '#64748b',
+  practice: '#b45309',
+};
+
+const sizes = {
+  sm: 'px-2.5 py-1 text-xs gap-1.5',
+  md: 'px-3 py-1.5 text-sm gap-2',
+};
+---
+
+<span
+  class={`inline-flex items-center rounded-full border border-line bg-surface font-mono text-ink ${sizes[size]}`}
+>
+  <span
+    class="size-1.5 shrink-0 rounded-full"
+    style={`background-color: ${layerColour[tech.layer]}`}
+    aria-hidden="true"
+  ></span>
+  {tech.name}
+</span>

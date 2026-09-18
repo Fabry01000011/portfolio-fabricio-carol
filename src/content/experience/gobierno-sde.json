@@ -1,0 +1,31 @@
+{
+  "role": "Pasantía en Desarrollo de Software",
+  "organisation": "Gobierno de Santiago del Estero",
+  "period": "Febrero 2024 — Diciembre 2025",
+  "startDate": "2024-02",
+  "location": "Santiago del Estero, Argentina",
+  "summary": "Desarrollo y mantenimiento de sistemas de gestión para dos dependencias municipales: la Dirección de la Juventud y la Dirección de Tránsito Municipal.",
+  "highlights": [
+    "Dirección de la Juventud: desarrollo de un sistema de gestión de programas, actividades y beneficiarios.",
+    "Dirección de Tránsito Municipal: actualización y optimización del sistema de gestión de taxis y habilitaciones.",
+    "Mantenimiento evolutivo y mejoras funcionales sobre módulos administrativos existentes.",
+    "Puesta en marcha y sostenimiento de los sistemas en la infraestructura del organismo."
+  ],
+  "technologies": ["javascript", "node", "express", "mysql", "react", "linux", "pm2"],
+  "kind": "tech",
+  "current": false,
+  "i18n": {
+    "en": {
+      "role": "Software Development Internship",
+      "organisation": "Government of Santiago del Estero",
+      "period": "February 2024 — December 2025",
+      "summary": "Development and maintenance of management systems for two municipal departments: the Youth Department and the Municipal Traffic Department.",
+      "highlights": [
+        "Youth Department: built a management system for programmes, activities and beneficiaries.",
+        "Municipal Traffic Department: updated and optimised the taxi and licensing management system.",
+        "Maintenance and functional improvements across existing administrative modules.",
+        "Deployment and upkeep of the systems on the institution's own infrastructure."
+      ]
+    }
+  }
+}

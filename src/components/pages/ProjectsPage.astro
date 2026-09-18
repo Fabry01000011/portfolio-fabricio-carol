@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import ProjectCard from '../project/ProjectCard.astro';
+import { useTranslations } from '../../i18n';
+import { getProjects, collectCategories } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const projects = await getProjects();
+const categories = collectCategories(projects);
+const origin = Astro.site?.origin ?? '';
+---
+
+<BaseLayout
+  title={t.meta.projectsTitle}
+  description={t.meta.projectsDescription}
+  path="/projects"
+  locale={locale}
+  schema={breadcrumbSchema(origin, [
+    { name: t.nav.home, path: '/' },
+    { name: t.meta.projectsTitle, path: '/projects' },
+  ])}
+>
+  <div class="container-page py-14 md:py-20">
+    <SectionHeader index="01" title={t.projects.sectionTitle} lead={t.projects.indexLead} as="h1" />
+
+    {categories.length > 1 && (
+      <div
+        class="reveal mt-10 flex flex-wrap gap-2"
+        role="group"
+        aria-label={t.projects.filterLabel}
+      >
+        <button
+          type="button"
+          class="rounded-full border border-accent bg-accent px-4 py-2 text-sm font-medium text-on-accent transition-colors"
+          data-filter="all"
+          aria-pressed="true"
+        >
+          {t.projects.allCategories}
+        </button>
+        {categories.map((category) => (
+          <button
+            type="button"
+            class="rounded-full border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-accent hover:text-accent"
+            data-filter={category}
+            aria-pressed="false"
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-project-grid>
+      {projects.map((project) => (
+        <ProjectCard project={project} locale={locale} class="project-item" />
+      ))}
+    </div>
+
+    <p class="mt-10 hidden text-center text-muted" data-empty-message>
+      {t.projects.empty}
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  function setupProjectFilter() {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+    const emptyMessage = document.querySelector<HTMLElement>('[data-empty-message]');
+    if (buttons.length === 0 || !grid) return;
+
+    const items = [...grid.querySelectorAll<HTMLElement>('.project-item')];
+
+    const activeClasses = ['border-accent', 'bg-accent', 'text-on-accent', 'font-medium'];
+    // The hover styles belong to the idle state only. Left on the active button
+    // they win the cascade while the pointer rests there after a click, painting
+    // accent-coloured text on the accent fill: an invisible label.
+    const idleClasses = ['border-line', 'bg-surface', 'hover:border-accent', 'hover:text-accent'];
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter ?? 'all';
+
+        buttons.forEach((other) => {
+          const isActive = other === button;
+          other.setAttribute('aria-pressed', String(isActive));
+          activeClasses.forEach((c) => other.classList.toggle(c, isActive));
+          idleClasses.forEach((c) => other.classList.toggle(c, !isActive));
+        });
+
+        let visible = 0;
+        items.forEach((item) => {
+          const categories = (item.dataset.categories ?? '').split('|');
+          const show = filter === 'all' || categories.includes(filter);
+          item.hidden = !show;
+          if (show) visible += 1;
+        });
+
+        emptyMessage?.classList.toggle('hidden', visible > 0);
+      });
+    });
+  }
+
+  setupProjectFilter();
+  document.addEventListener('astro:page-load', setupProjectFilter);
+</script>

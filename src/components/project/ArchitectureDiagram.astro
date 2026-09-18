@@ -1,0 +1,236 @@
+---
+import { ArrowDown } from 'lucide-astro';
+import {
+  layoutDiagram,
+  groupIntoLayers,
+  nodeStyles,
+  type DiagramNode,
+  type DiagramEdge,
+} from '../../lib/diagram';
+
+/**
+ * Architecture diagram built from project data.
+ *
+ * Wide screens get an SVG flow. Phones get the same layers as plain HTML rather
+ * than a scaled-down SVG: fitting a six-layer diagram into 340px leaves boxes
+ * around 60px wide, and an unreadable diagram is worse than none.
+ *
+ * Either way the text list rendered underneath carries the same information,
+ * which is what a screen reader follows.
+ */
+interface Props {
+  nodes: DiagramNode[];
+  edges: DiagramEdge[];
+  note?: string;
+  title: string;
+}
+
+const { nodes, edges, note, title } = Astro.props;
+
+const horizontal = layoutDiagram(nodes, edges, 'horizontal');
+const layers = groupIntoLayers(nodes, edges);
+const uid = Math.random().toString(36).slice(2, 8);
+---
+
+{nodes.length > 0 && (
+  <figure class="reveal">
+    <div class="overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface p-4 md:p-6">
+      {/* Phone: layers stacked as HTML, always legible. */}
+      <div class="space-y-3 md:hidden" aria-hidden="true">
+        {layers.map((layer, layerIndex) => (
+          <>
+            <div
+              class="grid gap-2"
+              style={`grid-template-columns: repeat(${Math.min(layer.length, 2)}, minmax(0, 1fr))`}
+            >
+              {layer.map((node) => (
+                <div class="flex items-start gap-2.5 rounded-lg border border-line bg-surface px-3 py-2.5">
+                  <span
+                    class="mt-0.5 h-8 w-[3px] shrink-0 rounded-full"
+                    style={`background-color:${nodeStyles[node.kind].accent}`}
+                  />
+                  <span class="min-w-0">
+                    <span class="block text-sm leading-snug font-medium">{node.label}</span>
+                    {node.description && (
+                      <span class="block truncate font-mono text-[11px] text-muted">
+                        {node.description}
+                      </span>
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {layerIndex < layers.length - 1 && (
+              <div class="flex justify-center text-muted">
+                <ArrowDown size={15} />
+              </div>
+            )}
+          </>
+        ))}
+      </div>
+
+      {[{ layout: horizontal, className: 'hidden md:block', key: 'h' }].map(
+        ({ layout, className, key }) => (
+          <svg
+            class={`diagram w-full ${className}`}
+            viewBox={`0 0 ${layout.width} ${layout.height}`}
+            style={`max-height:${layout.height}px`}
+            role="img"
+            aria-label={title}
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <marker
+                id={`arrow-${uid}-${key}`}
+                viewBox="0 0 10 10"
+                refX="9"
+                refY="5"
+                markerWidth="5"
+                markerHeight="5"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--color-muted)" />
+              </marker>
+            </defs>
+
+            <g class="diagram-edges">
+              {layout.edges.map((edge, i) => (
+                <g>
+                  <path
+                    d={edge.path}
+                    fill="none"
+                    stroke="var(--color-muted)"
+                    stroke-width="1.5"
+                    stroke-dasharray={edge.reverse ? '4 3' : undefined}
+                    marker-end={`url(#arrow-${uid}-${key})`}
+                    class="diagram-edge"
+                    style={`--edge-index:${i}`}
+                    opacity="0.65"
+                  />
+                </g>
+              ))}
+            </g>
+
+            <g class="diagram-nodes">
+              {layout.nodes.map((node) => {
+                const style = nodeStyles[node.kind];
+                return (
+                  <g class="diagram-node">
+                    <rect
+                      x={node.x}
+                      y={node.y}
+                      width={node.width}
+                      height={node.height}
+                      rx="8"
+                      fill="var(--color-surface)"
+                      stroke="var(--color-line)"
+                      stroke-width="1.5"
+                    />
+                    {/* Left rule carries the node's role colour. */}
+                    <rect
+                      x={node.x}
+                      y={node.y + 10}
+                      width="3"
+                      height={node.height - 20}
+                      rx="1.5"
+                      fill={style.accent}
+                    />
+                    <text
+                      x={node.x + 14}
+                      y={node.y + (node.description ? 28 : 40)}
+                      fill="var(--color-ink)"
+                      font-size="15"
+                      font-weight="500"
+                      style="font-family: var(--font-sans)"
+                    >
+                      {node.label}
+                    </text>
+                    {node.description && (
+                      <text
+                        x={node.x + 14}
+                        y={node.y + 48}
+                        fill="var(--color-muted)"
+                        font-size="12"
+                        style="font-family: var(--font-mono)"
+                      >
+                        {node.description}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
+            </g>
+          </svg>
+        ),
+      )}
+    </div>
+
+    {note && <figcaption class="mt-3 text-sm text-muted">{note}</figcaption>}
+  </figure>
+)}
+
+<style>
+  /* Connectors draw themselves in when the diagram scrolls into view.
+     `pathLength` normalisation is avoided: a fixed large dash covers any length. */
+  .diagram-edge {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+
+  .diagram.is-drawn .diagram-edge {
+    animation: draw-edge 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(var(--edge-index) * 70ms);
+  }
+
+  /* Dashed (reverse) edges keep their dash pattern once drawn. */
+  .diagram.is-drawn .diagram-edge[stroke-dasharray='4 3'] {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .diagram-node {
+    opacity: 0;
+    animation: none;
+  }
+
+  .diagram.is-drawn .diagram-node {
+    animation: node-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes draw-edge {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes node-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Without the animation the diagram must still be fully visible. */
+  @media (prefers-reduced-motion: reduce) {
+    .diagram-edge {
+      stroke-dashoffset: 0;
+    }
+    .diagram-node {
+      opacity: 1;
+      animation: none;
+    }
+  }
+
+  /* No JavaScript means no observer, so nothing would ever be revealed. */
+  :global(.no-js) .diagram-edge {
+    stroke-dashoffset: 0;
+  }
+
+  :global(.no-js) .diagram-node {
+    opacity: 1;
+  }
+</style>

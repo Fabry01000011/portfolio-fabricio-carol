@@ -1,0 +1,204 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+
+/**
+ * The two fonts that render above the fold. Preloading them starts the download
+ * alongside the stylesheet instead of after it, which removes the swap flash on
+ * the headline. The other subsets (cyrillic, greek, vietnamese) ship in the CSS
+ * but are never fetched: their unicode-range does not match this content.
+ */
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import displayLatin from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
+
+import Seo from '../components/seo/Seo.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import { useTranslations, LOCALE_TAGS, isPartialLocale } from '../i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Canonical (Spanish) route of this page, e.g. '/projects/virtual-fit'. */
+  path: string;
+  locale: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  locale,
+  image,
+  type = 'website',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const t = useTranslations(locale);
+const langTag = LOCALE_TAGS[locale as keyof typeof LOCALE_TAGS] ?? 'es-AR';
+---
+
+<!doctype html>
+<html lang={langTag} class="no-js scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="author" content="Fabricio Carol" />
+
+    <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+
+    <Seo
+      title={title}
+      description={description}
+      path={path}
+      locale={locale}
+      image={image}
+      type={type}
+      schema={schema}
+      noindex={noindex}
+    />
+
+    <script is:inline>
+      // Applied before first paint so the correct theme is never repainted.
+      // Also drops the `no-js` class, which is what keeps reveal animations
+      // from hiding content for visitors without JavaScript.
+      (function () {
+        const root = document.documentElement;
+        root.classList.remove('no-js');
+        try {
+          const stored = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && prefersDark)) root.classList.add('dark');
+        } catch {
+          // Storage unavailable: fall back to the light theme.
+        }
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+
+  <body class="min-h-dvh antialiased">
+    <a
+      href="#main"
+      class="sr-only rounded-full bg-accent px-4 py-2 text-sm font-medium text-on-accent focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100]"
+    >
+      {t.nav.skipToContent}
+    </a>
+
+    <Header locale={locale} path={path} />
+
+    <main id="main" class="pt-16 md:pt-20">
+      {isPartialLocale(locale) && (
+        <div class="border-b border-line bg-surface-2">
+          <p class="container-page py-2 text-center font-mono text-xs text-muted">
+            {t.langNotice.partial}
+          </p>
+        </div>
+      )}
+      <slot />
+    </main>
+
+    <Footer locale={locale} />
+
+    <script>
+      /**
+       * Scroll reveal, and the drawing of the architecture diagrams.
+       *
+       * An IntersectionObserver does the work, because it is cheap for the ~40
+       * elements a page carries. But the observer only delivers callbacks while
+       * the page is actually being composited: a backgrounded or throttled tab
+       * can stop them arriving, and anything still waiting would then stay
+       * invisible for good. So a scroll-driven sweep runs alongside it and
+       * reveals whatever is already in view. The sweep unbinds itself once every
+       * element has been shown, so it costs nothing on a page the visitor has
+       * read to the end.
+       *
+       * Rule behind all of it: an animation must never be the reason content
+       * cannot be read.
+       */
+      function setupReveal() {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const items = [...document.querySelectorAll<HTMLElement>('.reveal, .diagram')];
+        if (items.length === 0) return;
+
+        const show = (el: HTMLElement) =>
+          el.classList.add(el.classList.contains('diagram') ? 'is-drawn' : 'is-visible');
+        const shown = (el: HTMLElement) =>
+          el.classList.contains(el.classList.contains('diagram') ? 'is-drawn' : 'is-visible');
+
+        if (prefersReduced || !('IntersectionObserver' in window)) {
+          items.forEach(show);
+          return;
+        }
+
+        // threshold 0 with a small negative bottom margin: an element reveals as
+        // soon as it is properly inside the viewport. A percentage threshold
+        // would need a tall card to be 10% visible, which on a 480px card means
+        // scrolling almost 50px past it before anything appears.
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              show(entry.target as HTMLElement);
+              observer.unobserve(entry.target);
+            });
+          },
+          { rootMargin: '0px 0px -48px 0px', threshold: 0 },
+        );
+
+        items.forEach((el) => observer.observe(el));
+
+        let pending = items;
+        let lastSweep = 0;
+
+        const sweep = () => {
+          lastSweep = Date.now();
+          pending = pending.filter((el) => {
+            if (shown(el)) return false;
+            const rect = el.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight - 48 && rect.bottom > 0;
+            if (!inView) return true;
+            show(el);
+            observer.unobserve(el);
+            return false;
+          });
+
+          if (pending.length === 0) {
+            window.removeEventListener('scroll', schedule);
+            window.removeEventListener('resize', schedule);
+          }
+        };
+
+        // Throttled by wall clock rather than requestAnimationFrame: a frame
+        // callback never arrives in a tab that is not compositing, which is the
+        // exact situation this sweep exists to cover. At ~40 elements a sweep is
+        // a handful of layout reads, so ten a second costs nothing.
+        const schedule = () => {
+          if (Date.now() - lastSweep < 100) return;
+          sweep();
+        };
+
+        window.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule, { passive: true });
+
+        sweep();
+        // Late passes catch anything that moved once the fonts finished loading.
+        window.setTimeout(sweep, 400);
+        window.setTimeout(sweep, 1500);
+      }
+
+      setupReveal();
+      document.addEventListener('astro:page-load', setupReveal);
+    </script>
+  </body>
+</html>

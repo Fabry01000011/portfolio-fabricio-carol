@@ -1,0 +1,32 @@
+{
+  "role": "Desarrollador de Software Freelance",
+  "organisation": "Proyectos independientes · Workana · Clientes directos",
+  "period": "2020 — Actualidad",
+  "startDate": "2020-01",
+  "summary": "Desarrollo de aplicaciones web y soluciones a medida para clientes locales e internacionales, además de proyectos propios.",
+  "highlights": [
+    "Aplicaciones web y sistemas administrativos a medida.",
+    "Implementación de APIs REST y lógica de backend.",
+    "Diseño e integración de bases de datos relacionales y no relacionales.",
+    "Mantenimiento evolutivo, corrección de errores y mejora de rendimiento de sistemas existentes.",
+    "Comunicación directa con clientes no técnicos y documentación del trabajo."
+  ],
+  "technologies": ["typescript", "javascript", "node", "express", "react", "postgresql", "mysql", "git"],
+  "kind": "tech",
+  "current": true,
+  "i18n": {
+    "en": {
+      "role": "Freelance Software Developer",
+      "organisation": "Independent projects · Workana · Direct clients",
+      "period": "2020 — Present",
+      "summary": "Web applications and custom software for local and international clients, alongside my own products.",
+      "highlights": [
+        "Custom web applications and administrative systems.",
+        "REST APIs and backend logic.",
+        "Design and integration of relational and non-relational databases.",
+        "Maintenance, bug fixing and performance work on existing systems.",
+        "Direct communication with non-technical clients and documentation of the work."
+      ]
+    }
+  }
+}

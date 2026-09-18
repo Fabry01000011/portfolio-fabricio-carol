@@ -1,0 +1,57 @@
+---
+import { useTranslations } from '../../i18n';
+import { Github, Lock, Building2, Briefcase } from 'lucide-astro';
+
+/**
+ * Repository status. A private repo is never dressed up as public: each state
+ * says plainly what it is and why the code is not available.
+ */
+interface Props {
+  status: 'public' | 'private' | 'institutional' | 'client' | 'none';
+  url?: string;
+  locale: string;
+}
+
+const { status, url, locale } = Astro.props;
+const t = useTranslations(locale);
+
+const config = {
+  public: { icon: Github, title: t.project.repoPublic, note: undefined },
+  private: { icon: Lock, title: t.project.repoPrivate, note: t.project.repoPrivateNote },
+  institutional: {
+    icon: Building2,
+    title: t.project.repoInstitutional,
+    note: t.project.repoInstitutionalNote,
+  },
+  client: { icon: Briefcase, title: t.project.repoClient, note: t.project.repoClientNote },
+  none: null,
+} as const;
+
+const entry = config[status];
+const Icon = entry?.icon;
+---
+
+{entry && (
+  <div class="reveal flex items-start gap-3 rounded-[var(--radius-card)] border border-line bg-surface p-4 md:p-5">
+    <span
+      class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-muted"
+      aria-hidden="true"
+    >
+      {Icon && <Icon size={17} />}
+    </span>
+    <div class="min-w-0">
+      <p class="text-sm font-medium">{entry.title}</p>
+      {entry.note && <p class="mt-1 text-sm text-muted">{entry.note}</p>}
+      {status === 'public' && url && (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+        >
+          {t.project.viewCode}
+        </a>
+      )}
+    </div>
+  </div>
+)}

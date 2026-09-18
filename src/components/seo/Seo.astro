@@ -1,0 +1,88 @@
+---
+import { site } from '../../data/site';
+import { LOCALES, DEFAULT_LOCALE, LOCALE_TAGS, localePath } from '../../i18n';
+
+/**
+ * Every <head> tag that search engines and social platforms read.
+ * `path` is the canonical (Spanish) route, e.g. '/projects/virtual-fit';
+ * hreflang alternates are generated from it for all locales.
+ */
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  locale: string;
+  /** Absolute or root-relative image for social cards. */
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
+  /** Extra JSON-LD, already serialisable. */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  locale,
+  image = site.openGraphImage,
+  type = 'website',
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const origin = Astro.site?.origin ?? '';
+const canonical = new URL(localePath(locale, path), Astro.site ?? 'https://example.com').href;
+const imageUrl = image.startsWith('http') ? image : `${origin}${image}`;
+
+/** Title pattern: page — name, except on the home page where the title is complete. */
+const fullTitle = path === '/' ? title : `${title} — ${site.name}`;
+
+/**
+ * Language alternates. Skipped on noindex pages: the 404 route exists only at
+ * the root, so advertising a localised twin for it would point search engines
+ * at URLs that were never built.
+ */
+const alternates = noindex
+  ? []
+  : LOCALES.map((l) => ({
+      hreflang: LOCALE_TAGS[l],
+      href: new URL(localePath(l, path), Astro.site ?? 'https://example.com').href,
+    }));
+
+const schemaList = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+{alternates.map((alt) => (
+  <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+))}
+{!noindex && (
+  <link
+    rel="alternate"
+    hreflang="x-default"
+    href={new URL(localePath(DEFAULT_LOCALE, path), Astro.site ?? 'https://example.com').href}
+  />
+)}
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content={LOCALE_TAGS[locale as keyof typeof LOCALE_TAGS] ?? 'es_AR'} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+
+{schemaList.map((entry) => (
+  <script type="application/ld+json" set:html={JSON.stringify(entry)} is:inline></script>
+))}

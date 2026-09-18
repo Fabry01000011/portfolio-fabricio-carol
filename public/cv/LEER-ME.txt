@@ -1,0 +1,9 @@
+Colocá acá los dos PDF del CV, con estos nombres exactos:
+
+  fabricio-carol-cv-es.pdf
+  fabricio-carol-cv-en.pdf
+
+Los botones "Descargar CV" del sitio apuntan a esos archivos.
+Hasta que los subas, el enlace va a devolver 404.
+
+Recordá quitar el DNI y la fecha de nacimiento de la versión pública.

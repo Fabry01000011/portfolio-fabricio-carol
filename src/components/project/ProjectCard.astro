@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import { localePath, useTranslations } from '../../i18n';
+import { localiseProject, type Project } from '../../lib/content';
+import { resolveTechs } from '../../data/tech';
+import TechChip from '../ui/TechChip.astro';
+import { ArrowUpRight, ImageOff } from 'lucide-astro';
+
+interface Props {
+  project: Project;
+  locale: string;
+  /** 'featured' is the large card used on the home page and index. */
+  variant?: 'featured' | 'compact';
+  class?: string;
+}
+
+const { project, locale, variant = 'featured', class: className = '' } = Astro.props;
+const t = useTranslations(locale);
+const data = localiseProject(project, locale);
+const href = localePath(locale, `/projects/${project.id}`);
+
+/**
+ * Categories are written onto the card itself rather than passed in, so the
+ * index filter always reads the same list the card displays and the two cannot
+ * drift apart.
+ */
+const categoryAttr = data.categories.join('|');
+
+/** Featured cards show three chips; compact ones show two. More becomes noise. */
+const chips = resolveTechs(data.technologies).slice(0, variant === 'featured' ? 3 : 2);
+---
+
+<article class={`group reveal ${className}`} data-categories={categoryAttr}>
+  <a
+    href={href}
+    class="flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-lg focus-visible:-translate-y-1"
+  >
+    <div
+      class="relative aspect-[16/10] overflow-hidden bg-surface-2"
+      transition:name={`project-cover-${project.id}`}
+    >
+      {data.cover ? (
+        <Image
+          src={data.cover}
+          alt={data.title}
+          widths={[400, 640, 900]}
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+          class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          loading="lazy"
+        />
+      ) : (
+        /* Placeholder until an image is uploaded from the admin panel.
+             Kept deliberately plain rather than a fake mockup. */
+        <div class="dot-grid flex size-full flex-col items-center justify-center gap-2 text-muted">
+          <ImageOff size={22} aria-hidden="true" />
+          <span class="font-mono text-[11px]">{data.title}</span>
+        </div>
+      )}
+
+      {data.draft && (
+        <span class="absolute left-3 top-3 rounded-full bg-bg/95 px-2.5 py-1 font-mono text-[10px] font-medium tracking-wide text-ink uppercase backdrop-blur">
+          WIP
+        </span>
+      )}
+    </div>
+
+    <div class="flex flex-1 flex-col p-5 md:p-6">
+      {data.categories.length > 0 && (
+        <p class="font-mono text-[11px] tracking-wider text-muted uppercase">
+          {data.categories.join(' · ')}
+        </p>
+      )}
+
+      <h3
+        class={`font-display mt-2 font-semibold leading-tight ${variant === 'featured' ? 'text-xl md:text-2xl' : 'text-lg'}`}
+      >
+        {data.title}
+      </h3>
+
+      <p class="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+        {variant === 'featured' ? data.summary : data.tagline}
+      </p>
+
+      {chips.length > 0 && (
+        <div class="mt-4 flex flex-wrap gap-1.5">
+          {chips.map((tech) => (
+            <TechChip tech={tech} size="sm" />
+          ))}
+        </div>
+      )}
+
+      <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-transform duration-300 group-hover:translate-x-0.5">
+        {t.projects.viewProject}
+        <ArrowUpRight size={15} aria-hidden="true" />
+      </span>
+    </div>
+  </a>
+</article>

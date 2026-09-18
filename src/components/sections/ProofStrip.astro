@@ -1,0 +1,31 @@
+---
+import { useTranslations } from '../../i18n';
+
+/**
+ * Three facts a recruiter can absorb without reading a paragraph.
+ * Deliberately not metrics: every number here would be unverifiable.
+ */
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const items = [
+  { label: t.proof.since, value: t.proof.sinceValue },
+  { label: t.proof.sectors, value: t.proof.sectorsValue },
+  { label: t.proof.focus, value: t.proof.focusValue },
+];
+---
+
+<section class="border-y border-line bg-surface-2">
+  <div class="container-page grid gap-8 py-10 sm:grid-cols-3 md:py-12">
+    {items.map((item, i) => (
+      <div class={`reveal reveal-delay-${i}`}>
+        <p class="font-mono text-xs tracking-wider text-muted uppercase">{item.label}</p>
+        <p class="font-display mt-2 text-lg leading-snug font-medium">{item.value}</p>
+      </div>
+    ))}
+  </div>
+</section>

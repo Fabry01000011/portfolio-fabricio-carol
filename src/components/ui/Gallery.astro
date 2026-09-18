@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import { ImagePlus } from 'lucide-astro';
+
+/**
+ * Image gallery with a lightbox. Images are uploaded from the admin panel and
+ * optimised by Astro at build time.
+ *
+ * When there are none, an honest placeholder is shown rather than stock imagery.
+ */
+interface GalleryItem {
+  image: ImageMetadata;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+  emptyTitle: string;
+  emptyNote?: string;
+  closeLabel: string;
+  columns?: 2 | 3;
+}
+
+const { items, emptyTitle, emptyNote, closeLabel, columns = 2 } = Astro.props;
+---
+
+{items.length > 0 ? (
+  <ul
+    class:list={['grid gap-4', columns === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2']}
+    data-gallery
+  >
+    {items.map((item, i) => (
+      <li class={`reveal reveal-delay-${i % 3}`}>
+        <figure>
+          <button
+            type="button"
+            class="group block w-full overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface-2"
+            data-gallery-item
+            data-index={i}
+          >
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[500, 800, 1200]}
+              sizes="(min-width: 1024px) 500px, (min-width: 640px) 50vw, 100vw"
+              class="aspect-[16/10] size-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              loading="lazy"
+            />
+          </button>
+          {item.caption && <figcaption class="mt-2 text-xs text-muted">{item.caption}</figcaption>}
+        </figure>
+      </li>
+    ))}
+  </ul>
+) : (
+  <div class="dot-grid reveal flex flex-col items-center justify-center gap-3 rounded-[var(--radius-card)] border border-dashed border-line px-6 py-14 text-center">
+    <ImagePlus size={24} class="text-muted" aria-hidden="true" />
+    <p class="font-display text-base font-medium">{emptyTitle}</p>
+    {emptyNote && <p class="max-w-sm text-sm text-muted">{emptyNote}</p>}
+  </div>
+)}
+
+{items.length > 0 && (
+  <dialog
+    id="gallery-lightbox"
+    class="m-auto max-h-[90dvh] w-[92vw] max-w-5xl rounded-[var(--radius-card)] border border-line bg-surface p-0 backdrop:bg-black/70 backdrop:backdrop-blur-sm"
+    aria-label={closeLabel}
+  >
+    <div class="relative">
+      <button
+        type="button"
+        class="absolute right-3 top-3 z-10 inline-flex size-9 items-center justify-center rounded-full bg-bg/90 text-ink backdrop-blur transition-colors hover:text-accent"
+        data-lightbox-close
+        aria-label={closeLabel}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+      <img data-lightbox-image src="" alt="" class="max-h-[80dvh] w-full object-contain" />
+      <p data-lightbox-caption class="px-4 py-3 text-sm text-muted" />
+    </div>
+  </dialog>
+)}
+
+<script>
+  function setupGallery() {
+    const dialog = document.getElementById('gallery-lightbox') as HTMLDialogElement | null;
+    if (!dialog) return;
+
+    const image = dialog.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const caption = dialog.querySelector<HTMLElement>('[data-lightbox-caption]');
+    const closeBtn = dialog.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+    if (!image || !caption) return;
+
+    document.querySelectorAll<HTMLButtonElement>('[data-gallery-item]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const source = button.querySelector('img');
+        if (!source) return;
+        // Reuse the already-loaded optimised image: no second network request.
+        image.src = source.currentSrc || source.src;
+        image.alt = source.alt;
+        const figcaption = button.closest('figure')?.querySelector('figcaption');
+        caption.textContent = figcaption?.textContent ?? '';
+        caption.hidden = !figcaption;
+        dialog.showModal();
+      });
+    });
+
+    closeBtn?.addEventListener('click', () => dialog.close());
+
+    // Clicking the backdrop closes the dialog; clicking the image does not.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+
+  setupGallery();
+  document.addEventListener('astro:page-load', setupGallery);
+</script>

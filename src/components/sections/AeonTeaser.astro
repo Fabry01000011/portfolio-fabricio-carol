@@ -1,0 +1,43 @@
+---
+import { useTranslations, localePath } from '../../i18n';
+import { aeon, whatsappLink } from '../../data/site';
+import Button from '../ui/Button.astro';
+import { ArrowRight, MessageCircle } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+  index?: string;
+}
+
+const { locale, index = '05' } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="container-page py-16 md:py-24">
+  <div class="reveal dot-grid relative overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface p-8 md:p-12 lg:p-16">
+    <div class="relative max-w-2xl">
+      <span class="font-mono text-xs tracking-[0.2em] text-accent uppercase">{index}</span>
+      <h2 class="font-display mt-3 text-[length:var(--text-h2)] leading-[1.1]">{aeon.name}</h2>
+      <p class="mt-4 text-[length:var(--text-lead)] leading-relaxed text-muted">
+        {t.aeon.teaserLead}
+      </p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Button href={localePath(locale, '/aeon')} size="lg" class="w-full sm:w-auto">
+          {t.aeon.cta}
+          <ArrowRight size={17} aria-hidden="true" />
+        </Button>
+        <Button
+          href={whatsappLink(aeon.whatsapp, t.aeon.whatsappMessage)}
+          variant="secondary"
+          size="lg"
+          external
+          class="w-full sm:w-auto"
+        >
+          <MessageCircle size={17} aria-hidden="true" />
+          {t.aeon.ctaWhatsapp}
+        </Button>
+      </div>
+    </div>
+  </div>
+</section>

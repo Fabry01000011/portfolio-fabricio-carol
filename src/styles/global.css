@@ -1,0 +1,193 @@
+@import 'tailwindcss';
+
+/* Self-hosted variable fonts: no render-blocking third-party request. */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* ── Design tokens ────────────────────────────────────────────────────────
+   "Blueprint": warm paper, dot grid, cobalt accent, acid lime used sparingly.
+   Every colour is declared once here and consumed through Tailwind utilities. */
+@theme {
+  --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --color-bg: #f7f7f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f1ec;
+  --color-ink: #0f172a;
+  --color-muted: #5b6478;
+  --color-line: #e3e4de;
+  --color-accent: #2f55ff;
+  --color-accent-soft: #e8ecff;
+  /* Text on an accent fill. Dark mode lightens the accent, so white text would
+     drop to ~3:1 there; deep navy keeps every primary button readable. */
+  --color-on-accent: #ffffff;
+  --color-lime: #d8f45a;
+  --color-ok: #16a34a;
+
+  --radius-card: 0.75rem;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Fluid type scale */
+  --text-display: clamp(2.5rem, 1.6rem + 4.2vw, 4.5rem);
+  --text-h2: clamp(1.75rem, 1.25rem + 2.2vw, 2.75rem);
+  --text-h3: clamp(1.35rem, 1.15rem + 0.8vw, 1.75rem);
+  --text-lead: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem);
+}
+
+/* Dark mode: deep navy, never pure black. Driven by the `dark` class on <html>,
+   which an inline head script sets from storage or prefers-color-scheme. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  --color-bg: #0b1020;
+  --color-surface: #121a2e;
+  --color-surface-2: #172242;
+  --color-ink: #e8eaf2;
+  --color-muted: #9aa3b8;
+  --color-line: #233049;
+  --color-accent: #6c8cff;
+  --color-accent-soft: #1b2649;
+  --color-on-accent: #0b1020;
+  --color-ok: #4ade80;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Offset for the fixed header when jumping to an anchor. */
+    scroll-padding-top: 6rem;
+    background-color: var(--color-bg);
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-lime);
+    color: #0f172a;
+  }
+}
+
+@layer components {
+  /* Blueprint dot grid. Sits behind content. */
+  .dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, var(--color-line) 1px, transparent 0);
+    background-size: 28px 28px;
+  }
+
+  .container-page {
+    width: 100%;
+    margin-inline: auto;
+    max-width: 75rem;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Scroll reveal: elements start shifted and are released by IntersectionObserver.
+     Without JS (or with reduced motion) they are visible by default — see below. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 0.6s var(--ease-out-soft),
+      transform 0.6s var(--ease-out-soft);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal-delay-1 {
+    transition-delay: 80ms;
+  }
+  .reveal-delay-2 {
+    transition-delay: 160ms;
+  }
+  .reveal-delay-3 {
+    transition-delay: 240ms;
+  }
+}
+
+/* Accessibility: honour the OS "reduce motion" setting everywhere, including
+   Astro's view transitions. Content must never be hidden by an animation. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Fallback when JavaScript is unavailable: never hide content behind a reveal. */
+.no-js .reveal {
+  opacity: 1;
+  transform: none;
+}

@@ -1,0 +1,10 @@
+---
+import AeonPage from '../../components/pages/AeonPage.astro';
+import { nonDefaultLocalePaths } from '../../lib/routes';
+
+export const getStaticPaths = nonDefaultLocalePaths;
+
+const { locale } = Astro.params;
+---
+
+<AeonPage locale={locale!} />

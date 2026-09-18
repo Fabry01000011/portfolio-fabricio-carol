@@ -1,0 +1,78 @@
+---
+import { useTranslations, localePath } from '../../i18n';
+import { site, aeon } from '../../data/site';
+import { Mail, Linkedin, Github, Instagram } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getFullYear();
+
+const links = [
+  { href: '/projects', label: t.nav.projects },
+  { href: '/about', label: t.nav.about },
+  { href: '/experience', label: t.nav.experience },
+  { href: '/aeon', label: t.nav.aeon },
+  { href: '/contact', label: t.nav.contact },
+];
+
+const socials = [
+  { href: `mailto:${site.email}`, label: 'Email', icon: Mail },
+  { href: site.linkedin, label: 'LinkedIn', icon: Linkedin },
+  { href: site.github, label: 'GitHub', icon: Github },
+  { href: site.instagram, label: 'Instagram', icon: Instagram },
+];
+---
+
+<footer class="mt-24 border-t border-line md:mt-32">
+  <div class="container-page py-12 md:py-16">
+    <div class="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+      <div class="max-w-sm">
+        <p class="font-display text-lg font-semibold">{site.name}</p>
+        <p class="mt-2 text-sm text-muted">{t.footer.tagline}</p>
+        <p class="mt-4 font-mono text-xs text-muted">
+          {site.location.city}, {site.location.country}
+        </p>
+      </div>
+
+      <nav class="flex flex-col gap-2" aria-label={t.nav.menu}>
+        {links.map((link) => (
+          <a
+            href={localePath(locale, link.href)}
+            class="text-sm text-muted transition-colors hover:text-accent"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-2">
+          {socials.map((social) => (
+            <a
+              href={social.href}
+              class="inline-flex size-10 items-center justify-center rounded-full border border-line text-muted transition-colors hover:border-accent hover:text-accent"
+              aria-label={social.label}
+              {...(social.href.startsWith('http')
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+            >
+              <social.icon size={17} aria-hidden="true" />
+            </a>
+          ))}
+        </div>
+        <p class="font-mono text-xs text-muted">{aeon.name}</p>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-2 border-t border-line pt-6 text-xs text-muted md:flex-row md:items-center md:justify-between">
+      <p>
+        © {year} {site.fullName}. {t.footer.rights}
+      </p>
+      <p>{t.footer.builtWith}</p>
+    </div>
+  </div>
+</footer>

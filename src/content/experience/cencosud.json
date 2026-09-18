@@ -1,0 +1,31 @@
+{
+  "role": "Analista de Sistemas y Soporte Técnico Operativo",
+  "organisation": "Tarjeta Cencosud / Cencopay",
+  "period": "Enero 2026 — Agosto 2026",
+  "startDate": "2026-01",
+  "summary": "Soporte técnico y funcional sobre Engage5, la plataforma transaccional de productos financieros y tarjetas. Análisis de incidencias, validación de datos y verificación de reglas de negocio.",
+  "highlights": [
+    "Análisis de incidencias sobre procesos transaccionales de productos financieros.",
+    "Validación de datos y verificación de reglas de negocio en la plataforma.",
+    "Consultas a bases de datos para revisar la consistencia de la información operativa.",
+    "Pruebas funcionales y documentación técnica.",
+    "Coordinación con equipos internos para la resolución y el escalamiento de errores."
+  ],
+  "technologies": ["sql", "requirements"],
+  "kind": "tech",
+  "current": false,
+  "i18n": {
+    "en": {
+      "role": "Systems Analyst and Operational Technical Support",
+      "period": "January 2026 — August 2026",
+      "summary": "Technical and functional support for Engage5, the transactional platform behind financial products and cards. Incident analysis, data validation and verification of business rules.",
+      "highlights": [
+        "Incident analysis across transactional processes for financial products.",
+        "Data validation and verification of business rules on the platform.",
+        "Database queries to check the consistency of operational information.",
+        "Functional testing and technical documentation.",
+        "Coordination with internal teams to resolve and escalate issues."
+      ]
+    }
+  }
+}

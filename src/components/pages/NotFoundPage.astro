@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Button from '../ui/Button.astro';
+import { useTranslations, localePath } from '../../i18n';
+import { ArrowLeft } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<BaseLayout
+  title={t.meta.notFoundTitle}
+  description={t.notFound.body}
+  path="/404"
+  locale={locale}
+  noindex
+>
+  <div class="container-page flex min-h-[60dvh] flex-col items-center justify-center py-20 text-center">
+    <p class="font-mono text-sm tracking-[0.2em] text-accent">404</p>
+    <h1 class="mt-4 text-[length:var(--text-h2)]">{t.notFound.title}</h1>
+    <p class="mt-4 max-w-md text-muted">{t.notFound.body}</p>
+    <Button href={localePath(locale, '/')} size="lg" class="mt-8">
+      <ArrowLeft size={17} aria-hidden="true" />
+      {t.notFound.cta}
+    </Button>
+  </div>
+</BaseLayout>

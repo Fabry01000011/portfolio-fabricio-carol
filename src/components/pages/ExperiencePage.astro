@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import ExperienceTimeline from '../sections/ExperienceTimeline.astro';
+import Button from '../ui/Button.astro';
+import { useTranslations } from '../../i18n';
+import { getExperience } from '../../lib/content';
+import { site } from '../../data/site';
+import { cvAvailable } from '../../lib/cv';
+import { breadcrumbSchema } from '../../lib/schema';
+import { FileDown, GraduationCap, Languages } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const entries = await getExperience();
+const origin = Astro.site?.origin ?? '';
+
+const education = {
+  es: {
+    degree: 'Técnico Superior en Desarrollo de Software',
+    school: 'Instituto Tecnológico de Santiago del Estero (ITSE)',
+    period: '2023 — 2025 · Graduado',
+  },
+  en: {
+    degree: 'Software Development Technician',
+    school: 'Instituto Tecnológico de Santiago del Estero (ITSE)',
+    period: '2023 — 2025 · Graduated',
+  },
+};
+
+const languages = {
+  es: ['Español — nativo', 'Inglés — intermedio (B1/B2)', 'Portugués — intermedio'],
+  en: ['Spanish — native', 'English — intermediate (B1/B2)', 'Portuguese — intermediate'],
+};
+
+const edu = locale === 'en' ? education.en : education.es;
+const langs = locale === 'en' ? languages.en : languages.es;
+---
+
+<BaseLayout
+  title={t.meta.experienceTitle}
+  description={t.meta.experienceDescription}
+  path="/experience"
+  locale={locale}
+  schema={breadcrumbSchema(origin, [
+    { name: t.nav.home, path: '/' },
+    { name: t.meta.experienceTitle, path: '/experience' },
+  ])}
+>
+  <div class="container-page py-14 md:py-20">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionHeader
+        index="01"
+        title={t.experience.sectionTitle}
+        lead={t.experience.lead}
+        as="h1"
+        class="flex-1"
+      />
+      <div class="reveal flex shrink-0 gap-2">
+        {cvAvailable.es && (
+          <Button href={site.cv.es} download variant="secondary">
+            <FileDown size={15} aria-hidden="true" />
+            CV ES
+          </Button>
+        )}
+        {cvAvailable.en && (
+          <Button href={site.cv.en} download variant="secondary">
+            <FileDown size={15} aria-hidden="true" />
+            CV EN
+          </Button>
+        )}
+      </div>
+    </div>
+
+    <ExperienceTimeline entries={entries} locale={locale} variant="full" />
+
+    <div class="mt-16 grid gap-8 border-t border-line pt-12 md:grid-cols-2 md:gap-12">
+      <section class="reveal">
+        <h2 class="flex items-center gap-2.5 font-mono text-xs tracking-[0.15em] text-muted uppercase">
+          <GraduationCap size={15} aria-hidden="true" />
+          {t.experience.education}
+        </h2>
+        <div class="mt-5 rounded-[var(--radius-card)] border border-line bg-surface p-5">
+          <h3 class="font-display font-semibold">{edu.degree}</h3>
+          <p class="mt-1 text-sm text-accent">{edu.school}</p>
+          <p class="mt-2 font-mono text-xs text-muted">{edu.period}</p>
+        </div>
+      </section>
+
+      <section class="reveal reveal-delay-1">
+        <h2 class="flex items-center gap-2.5 font-mono text-xs tracking-[0.15em] text-muted uppercase">
+          <Languages size={15} aria-hidden="true" />
+          {t.experience.languages}
+        </h2>
+        <ul class="mt-5 space-y-2 rounded-[var(--radius-card)] border border-line bg-surface p-5">
+          {langs.map((language) => (
+            <li class="text-sm text-muted">{language}</li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  </div>
+</BaseLayout>

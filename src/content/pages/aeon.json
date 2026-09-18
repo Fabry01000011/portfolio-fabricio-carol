@@ -1,0 +1,119 @@
+{
+  "title": "ÆON Software Solutions",
+  "body": [
+    "ÆON es el espacio donde desarrollo software para clientes junto a mis socios. No somos una agencia grande y no pretendemos serlo: somos un equipo chico que toma proyectos que puede sostener bien.",
+    "Trabajamos con negocios que necesitan un sistema propio y no encuentran respuesta en una herramienta enlatada. Empresas de transporte, comercios, emprendimientos que crecieron hasta el punto en que la planilla dejó de alcanzar.",
+    "Lo que ofrecemos es concreto: entender cómo funciona el negocio, construir el sistema que le falta y acompañarlo después de la entrega. Si un proyecto no entra en lo que podemos hacer bien, lo decimos antes de empezar."
+  ],
+  "facts": [],
+  "gallery": [],
+  "services": [
+    {
+      "title": "Sistemas de gestión a medida",
+      "description": "Software pensado para cómo trabaja tu negocio, no al revés. Administración, control y reportes sobre tus propios datos.",
+      "icon": "database"
+    },
+    {
+      "title": "Aplicaciones web",
+      "description": "Plataformas y paneles para uso interno o para tus clientes, con acceso por roles y desde cualquier dispositivo.",
+      "icon": "layout"
+    },
+    {
+      "title": "E-commerce y venta online",
+      "description": "Tiendas y sistemas de venta con cobro integrado, stock y administración propia.",
+      "icon": "shopping-cart"
+    },
+    {
+      "title": "APIs e integraciones",
+      "description": "Conectar los sistemas que ya usás para que dejen de pedir carga manual de los mismos datos dos veces.",
+      "icon": "plug"
+    },
+    {
+      "title": "Automatizaciones",
+      "description": "Procesos repetitivos que hoy alguien hace a mano y podrían correr solos.",
+      "icon": "zap"
+    },
+    {
+      "title": "Mantenimiento y mejoras",
+      "description": "Trabajo sobre sistemas que ya existen: corregir, optimizar y sumar funcionalidad sin romper lo que anda.",
+      "icon": "wrench"
+    }
+  ],
+  "steps": [
+    {
+      "title": "Entendemos el problema",
+      "description": "Una conversación para saber cómo funciona hoy tu operación y dónde está el cuello de botella real."
+    },
+    {
+      "title": "Definimos alcance y plazo",
+      "description": "Qué entra, qué no y cuándo. Si algo no conviene hacerlo, lo decimos en esta instancia."
+    },
+    {
+      "title": "Construimos por partes",
+      "description": "Entregas parciales que podés ver y usar, en lugar de esperar meses hasta un lanzamiento único."
+    },
+    {
+      "title": "Acompañamos después",
+      "description": "Un sistema entregado y abandonado deja de servir en poco tiempo. Seguimos disponibles para ajustes y mejoras."
+    }
+  ],
+  "i18n": {
+    "en": {
+      "body": [
+        "ÆON is where my partners and I build software for clients. We are not a large agency and do not aim to be: we are a small team that takes on projects we can support properly.",
+        "We work with businesses that need a system of their own and cannot find an off-the-shelf tool that fits. Transport companies, shops, ventures that grew past the point where a spreadsheet was enough.",
+        "What we offer is concrete: understand how the business works, build the system it is missing and stay available after delivery. If a project is outside what we can do well, we say so before starting."
+      ],
+      "services": [
+        {
+          "title": "Custom management systems",
+          "description": "Software shaped around how your business works, not the other way round. Administration, control and reporting on your own data.",
+          "icon": "database"
+        },
+        {
+          "title": "Web applications",
+          "description": "Platforms and dashboards for internal use or for your customers, with role-based access from any device.",
+          "icon": "layout"
+        },
+        {
+          "title": "E-commerce and online sales",
+          "description": "Stores and sales systems with integrated payments, stock and your own administration.",
+          "icon": "shopping-cart"
+        },
+        {
+          "title": "APIs and integrations",
+          "description": "Connecting the systems you already use so they stop asking for the same data to be entered twice.",
+          "icon": "plug"
+        },
+        {
+          "title": "Automation",
+          "description": "Repetitive processes that someone does by hand today and could run on their own.",
+          "icon": "zap"
+        },
+        {
+          "title": "Maintenance and improvements",
+          "description": "Work on existing systems: fixing, optimising and adding functionality without breaking what works.",
+          "icon": "wrench"
+        }
+      ],
+      "steps": [
+        {
+          "title": "We understand the problem",
+          "description": "A conversation about how your operation works today and where the real bottleneck is."
+        },
+        {
+          "title": "We agree scope and timeline",
+          "description": "What is included, what is not and when. If something is not worth building, we say so here."
+        },
+        {
+          "title": "We build in stages",
+          "description": "Partial deliveries you can see and use, rather than waiting months for a single launch."
+        },
+        {
+          "title": "We stay afterwards",
+          "description": "A system that is delivered and abandoned stops being useful quickly. We remain available for adjustments and improvements."
+        }
+      ]
+    }
+  }
+}

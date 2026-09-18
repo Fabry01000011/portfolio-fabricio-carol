@@ -1,0 +1,120 @@
+{
+  "title": "Virtual-Fit",
+  "tagline": "Probador virtual de ropa para tiendas online, con proveedores de IA intercambiables.",
+  "summary": "Widget embebible que permite a un comprador subir su foto en la página de producto y verse con la prenda puesta. La imagen del producto se toma automáticamente de la página y el procesamiento corre en una cola propia, con el proveedor de IA configurable desde un panel.",
+  "order": 2,
+  "featured": true,
+  "draft": false,
+  "year": "2026",
+  "status": "Verificado end-to-end en entorno local",
+  "team": "Proyecto propio",
+  "categories": ["IA", "E-commerce", "Backend"],
+  "technologies": [
+    "typescript",
+    "nestjs",
+    "node",
+    "postgresql",
+    "prisma",
+    "redis",
+    "bullmq",
+    "nextjs",
+    "preact",
+    "docker",
+    "jest",
+    "gemini"
+  ],
+  "problem": "Comprar ropa online tiene un problema que ningún catálogo resuelve: no sabés cómo te va a quedar. La tienda pierde ventas por la duda y pierde plata por las devoluciones. Las soluciones que existen suelen exigir que alguien cargue manualmente la foto de cada prenda, lo que las vuelve inviables para un catálogo real.",
+  "solution": "Un widget que se pega con una línea en la página de producto y toma la imagen de la prenda directamente del HTML, sin intervención manual. El comprador sube solo su foto. El backend valida la imagen, descarga la prenda del lado del servidor, encola el trabajo y devuelve el resultado. Todo el procesamiento pasa por una cola, así que la web nunca queda esperando a un proveedor externo.",
+  "role": "Diseñé y construí el sistema completo: la arquitectura del monorepo, la API, el worker, los adaptadores de proveedores, el panel de administración, el widget y las pruebas end-to-end.",
+  "features": [
+    {
+      "title": "Widget embebible de 24 KB",
+      "description": "Construido con Preact y montado en shadow DOM, para que el CSS de la tienda no lo rompa ni él rompa el de la tienda."
+    },
+    {
+      "title": "Imagen de la prenda automática",
+      "description": "Se lee de un atributo del HTML del producto. Nadie sube una foto de catálogo a mano."
+    },
+    {
+      "title": "Ocho proveedores de IA intercambiables",
+      "description": "Detrás de una interfaz común. Cambiar de proveedor es elegir otra opción en el panel, sin redesplegar."
+    },
+    {
+      "title": "Panel de administración",
+      "description": "Proveedor activo, credenciales, branding del widget, estadísticas de uso e historial de sesiones."
+    },
+    {
+      "title": "Procesamiento en cola",
+      "description": "Cada try-on es un trabajo con estados, reintento automático y tiempo límite por proveedor."
+    },
+    {
+      "title": "Retención automática de imágenes",
+      "description": "Una tarea programada elimina las imágenes viejas y conserva los registros."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "El proveedor se resuelve en cada trabajo, no al arrancar",
+      "description": "Cambiar de proveedor o rotar una credencial desde el panel tiene efecto inmediato. Si se resolviera al iniciar el proceso, cada cambio exigiría un redespliegue."
+    },
+    {
+      "title": "Las credenciales se guardan cifradas con AES-256-GCM",
+      "description": "Nunca viajan a los registros, que redactan los secretos, y en la interfaz se muestran enmascaradas."
+    },
+    {
+      "title": "Protección contra SSRF al descargar la prenda",
+      "description": "La descarga acepta solo http y https, bloquea rangos de IP privadas incluso después de un redirect, y limita el tamaño. Sin esa guarda, la URL de una prenda podría apuntar a la red interna."
+    },
+    {
+      "title": "El resultado se guarda en almacenamiento propio, no se enlaza al del proveedor",
+      "description": "Los enlaces de los proveedores caducan y la política de retención necesita controlar los archivos. Los adaptadores devuelven bytes, no URLs."
+    },
+    {
+      "title": "El estado final lo decide el evento de fallo de la cola",
+      "description": "No el intento individual. Así un error transitorio reintenta y solo el agotamiento de los intentos marca la sesión como fallida."
+    },
+    {
+      "title": "Las pruebas corren contra una base de datos distinta a la de desarrollo",
+      "description": "Un worker de desarrollo corriendo en paralelo competía por los trabajos de las pruebas y las volvía intermitentes. Fue un error real, no una precaución teórica."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "shop", "label": "Página de producto", "kind": "client", "description": "Tienda del cliente" },
+      { "id": "widget", "label": "Widget", "kind": "frontend", "description": "Preact · shadow DOM" },
+      { "id": "api", "label": "API", "kind": "api", "description": "NestJS" },
+      { "id": "queue", "label": "Cola", "kind": "service", "description": "BullMQ · Redis" },
+      { "id": "worker", "label": "Worker", "kind": "worker", "description": "Procesa el try-on" },
+      { "id": "db", "label": "PostgreSQL", "kind": "database", "description": "Sesiones y config" },
+      { "id": "storage", "label": "Almacenamiento", "kind": "storage", "description": "Imágenes" },
+      { "id": "provider", "label": "Proveedor de IA", "kind": "external", "description": "Intercambiable" },
+      { "id": "admin", "label": "Panel admin", "kind": "frontend", "description": "Next.js" }
+    ],
+    "edges": [
+      { "from": "shop", "to": "widget", "label": "embebe" },
+      { "from": "widget", "to": "api", "label": "sube foto" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "storage" },
+      { "from": "api", "to": "queue", "label": "encola" },
+      { "from": "queue", "to": "worker" },
+      { "from": "worker", "to": "provider", "label": "genera" },
+      { "from": "worker", "to": "storage", "label": "guarda" },
+      { "from": "admin", "to": "api", "label": "configura" }
+    ],
+    "note": "El worker corre dentro del proceso de la API: a esta escala, separarlo sería ceremonia sin beneficio."
+  },
+  "gallery": [],
+  "links": { "extra": [] },
+  "repoStatus": "private",
+  "aeon": false,
+  "i18n": {
+    "en": {
+      "tagline": "Virtual clothing try-on for online stores, with swappable AI providers.",
+      "summary": "An embeddable widget that lets a shopper upload their photo on the product page and see themselves wearing the garment. The product image is pulled automatically from the page, and processing runs on its own queue with the AI provider configurable from an admin panel.",
+      "problem": "Buying clothes online has a problem no catalogue solves: you cannot tell how it will fit. The store loses sales to hesitation and loses money to returns. Existing solutions usually require someone to manually upload a photo of every garment, which makes them unworkable for a real catalogue.",
+      "solution": "A widget that drops into the product page with one line and reads the garment image straight from the HTML, with no manual step. The shopper only uploads their own photo. The backend validates the image, downloads the garment server-side, queues the job and returns the result. All processing goes through a queue, so the page never waits on an external provider.",
+      "role": "I designed and built the whole system: the monorepo architecture, the API, the worker, the provider adapters, the admin panel, the widget and the end-to-end tests."
+    }
+  }
+}

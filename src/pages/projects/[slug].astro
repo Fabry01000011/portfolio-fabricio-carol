@@ -1,0 +1,17 @@
+---
+import ProjectDetailPage from '../../components/pages/ProjectDetailPage.astro';
+import { getProjects } from '../../lib/content';
+import { DEFAULT_LOCALE } from '../../config/site.mjs';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectDetailPage project={project} locale={DEFAULT_LOCALE} />

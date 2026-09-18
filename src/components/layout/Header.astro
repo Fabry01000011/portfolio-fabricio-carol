@@ -1,0 +1,193 @@
+---
+import { useTranslations, localePath } from '../../i18n';
+import { site } from '../../data/site';
+import { cvFor } from '../../lib/cv';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { Menu, X, FileDown } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+  /** Canonical route of the current page, used to mark the active link. */
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const t = useTranslations(locale);
+
+const links = [
+  { href: '/projects', label: t.nav.projects },
+  { href: '/about', label: t.nav.about },
+  { href: '/experience', label: t.nav.experience },
+  { href: '/aeon', label: t.nav.aeon },
+  { href: '/contact', label: t.nav.contact },
+];
+
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+const cvHref = cvFor(locale);
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-300"
+>
+  <div class="container-page flex h-16 items-center justify-between gap-4 md:h-20">
+    <a
+      href={localePath(locale, '/')}
+      class="font-display text-base font-semibold tracking-tight md:text-lg"
+      aria-label={`${site.name} — ${t.nav.home}`}
+    >
+      Fabricio<span class="text-accent">.</span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label={t.nav.menu}>
+      {links.map((link) => (
+        <a
+          href={localePath(locale, link.href)}
+          class:list={[
+            'rounded-full px-3 py-2 text-sm transition-colors hover:text-accent',
+            isActive(link.href) ? 'text-accent font-medium' : 'text-muted',
+          ]}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-1">
+      <ThemeToggle label={t.nav.toggleTheme} />
+      <LanguageSwitcher locale={locale} path={path} label={t.nav.language} />
+      {cvHref && (
+        <a
+          href={cvHref}
+          download
+          class="ml-1 hidden items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium transition-colors hover:border-accent hover:text-accent lg:inline-flex"
+        >
+          <FileDown size={15} aria-hidden="true" />
+          CV
+        </a>
+      )}
+
+      <button
+        type="button"
+        id="menu-open"
+        class="ml-1 inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:text-accent md:hidden"
+        aria-label={t.nav.openMenu}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Menu size={20} aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu: full-screen, large targets, contact details at the bottom. -->
+<div
+  id="mobile-menu"
+  class="invisible fixed inset-0 z-[60] bg-bg opacity-0 transition-[opacity,visibility] duration-200 md:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label={t.nav.menu}
+>
+  <div class="container-page flex h-16 items-center justify-end">
+    <button
+      type="button"
+      id="menu-close"
+      class="inline-flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:text-accent"
+      aria-label={t.nav.close}
+    >
+      <X size={22} aria-hidden="true" />
+    </button>
+  </div>
+
+  <nav class="container-page flex flex-col gap-1 pt-6" aria-label={t.nav.menu}>
+    {links.map((link, i) => (
+      <a
+        href={localePath(locale, link.href)}
+        class:list={[
+          'font-display border-b border-line py-4 text-2xl transition-colors',
+          isActive(link.href) ? 'text-accent' : 'text-ink hover:text-accent',
+        ]}
+        style={`--i:${i}`}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+
+  <div class="container-page mt-8 flex flex-col gap-3 text-sm text-muted">
+    {cvHref && (
+      <a href={cvHref} download class="inline-flex items-center gap-2 hover:text-accent">
+        <FileDown size={15} aria-hidden="true" />
+        {t.hero.ctaCv}
+      </a>
+    )}
+    <a href={`mailto:${site.email}`} class="hover:text-accent">
+      {site.email}
+    </a>
+  </div>
+</div>
+
+<script>
+  // Header behaviour: solid background once scrolled, and the mobile menu.
+  // Re-runs after every view transition, since the DOM is swapped.
+  function setupHeader() {
+    const header = document.getElementById('site-header');
+    const openBtn = document.getElementById('menu-open');
+    const closeBtn = document.getElementById('menu-close');
+    const menu = document.getElementById('mobile-menu');
+    if (!header || !openBtn || !closeBtn || !menu) return;
+
+    const solid = ['bg-bg/85', 'backdrop-blur-md', 'border-line'];
+    const onScroll = () => {
+      header.classList.toggle('border-transparent', window.scrollY <= 8);
+      solid.forEach((c) => header.classList.toggle(c, window.scrollY > 8));
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    const focusableSelector = 'a[href], button:not([disabled])';
+
+    const open = () => {
+      menu.classList.remove('invisible', 'opacity-0');
+      openBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      // Move focus into the dialog so keyboard users are not left behind it.
+      menu.querySelector<HTMLElement>(focusableSelector)?.focus();
+    };
+
+    const close = () => {
+      menu.classList.add('invisible', 'opacity-0');
+      openBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      openBtn.focus();
+    };
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.classList.contains('invisible')) close();
+      // Trap focus inside the open dialog.
+      if (event.key === 'Tab' && !menu.classList.contains('invisible')) {
+        const items = [...menu.querySelectorAll<HTMLElement>(focusableSelector)];
+        if (items.length === 0) return;
+        const first = items[0]!;
+        const last = items[items.length - 1]!;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+
+  setupHeader();
+  document.addEventListener('astro:page-load', setupHeader);
+</script>

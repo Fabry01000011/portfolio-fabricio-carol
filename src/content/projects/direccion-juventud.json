@@ -1,0 +1,76 @@
+{
+  "title": "Sistema de gestión — Dirección de la Juventud",
+  "tagline": "Administración de programas, actividades y beneficiarios para la Municipalidad de Santiago del Estero.",
+  "summary": "Sistema web para que la Dirección de la Juventud administre sus programas, cargue actividades, gestione inscripciones y lleve el registro de beneficiarios. Desarrollado durante la pasantía en el Gobierno de Santiago del Estero.",
+  "order": 4,
+  "featured": false,
+  "draft": true,
+  "year": "2024 — 2025",
+  "client": "Municipalidad de Santiago del Estero",
+  "status": "En producción en servidores del organismo",
+  "categories": ["Full Stack", "Sector público", "Gestión"],
+  "technologies": ["javascript", "node", "express", "mysql", "react", "linux", "pm2", "tailscale"],
+  "problem": "La Dirección coordinaba programas y actividades para jóvenes sin un sistema que centralizara la información. Las inscripciones llegaban por canales sueltos y el registro de quién participaba en qué quedaba disperso, lo que dificultaba tanto la organización de cada actividad como el reporte de lo realizado.",
+  "solution": "Un sistema web con un panel de administración donde se cargan programas y actividades, se gestionan las inscripciones y se consulta el registro de beneficiarios. La información queda en una sola base de datos, consultable y exportable.",
+  "role": "Desarrollo full stack del sistema: modelo de datos, API, panel de administración y puesta en el servidor del organismo.",
+  "features": [
+    {
+      "title": "Gestión de programas y actividades",
+      "description": "Alta, edición y publicación de las propuestas de la Dirección."
+    },
+    {
+      "title": "Inscripciones",
+      "description": "Formulario de inscripción y administración de los inscriptos por actividad."
+    },
+    {
+      "title": "Registro de beneficiarios",
+      "description": "Padrón consultable de quienes participan en los programas."
+    },
+    {
+      "title": "Exportación de datos",
+      "description": "Descarga de los registros para armar reportes."
+    },
+    {
+      "title": "Acceso con autenticación",
+      "description": "Ingreso por usuario y contraseña con contraseñas cifradas."
+    }
+  ],
+  "highlights": [
+    {
+      "title": "Desplegado en la infraestructura del organismo",
+      "description": "El sistema corre en servidores del gobierno sobre Linux, con el proceso gestionado por PM2 para que sobreviva a reinicios."
+    },
+    {
+      "title": "Acceso administrativo por red privada",
+      "description": "El panel no se expone abiertamente a internet: se accede a través de una red privada, lo que reduce la superficie expuesta."
+    }
+  ],
+  "results": [],
+  "architecture": {
+    "nodes": [
+      { "id": "public", "label": "Sitio público", "kind": "client", "description": "Actividades e inscripción" },
+      { "id": "panel", "label": "Panel de gestión", "kind": "frontend", "description": "Uso interno" },
+      { "id": "api", "label": "API", "kind": "api", "description": "Node · Express" },
+      { "id": "db", "label": "MySQL", "kind": "database", "description": "Programas · inscripciones" },
+      { "id": "server", "label": "Servidor del organismo", "kind": "service", "description": "Linux · PM2" }
+    ],
+    "edges": [
+      { "from": "public", "to": "api", "label": "inscribe" },
+      { "from": "panel", "to": "api", "label": "gestiona" },
+      { "from": "api", "to": "db" },
+      { "from": "api", "to": "server", "label": "corre en" }
+    ]
+  },
+  "gallery": [],
+  "links": { "extra": [] },
+  "repoStatus": "institutional",
+  "aeon": false,
+  "i18n": {
+    "en": {
+      "title": "Management system — Youth Department",
+      "tagline": "Programme, activity and beneficiary management for the Municipality of Santiago del Estero.",
+      "summary": "Web system for the Youth Department to manage its programmes, publish activities, handle registrations and keep a record of beneficiaries. Built during my internship with the Government of Santiago del Estero.",
+      "role": "Full stack development: data model, API, admin panel and deployment on the institution's own server."
+    }
+  }
+}

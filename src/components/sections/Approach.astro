@@ -1,0 +1,45 @@
+---
+import { useTranslations } from '../../i18n';
+import SectionHeader from '../ui/SectionHeader.astro';
+import { Search, Database, Hammer } from 'lucide-astro';
+
+/**
+ * "How I work" — the differentiator (technology + business + sales) told as a
+ * process instead of a slogan. Each step names the real experience behind it.
+ */
+interface Props {
+  locale: string;
+  index?: string;
+}
+
+const { locale, index = '03' } = Astro.props;
+const t = useTranslations(locale);
+
+const steps = [
+  { icon: Search, title: t.approach.step1Title, body: t.approach.step1Body },
+  { icon: Database, title: t.approach.step2Title, body: t.approach.step2Body },
+  { icon: Hammer, title: t.approach.step3Title, body: t.approach.step3Body },
+];
+---
+
+<section class="container-page py-16 md:py-24">
+  <SectionHeader index={index} title={t.approach.sectionTitle} lead={t.approach.sectionLead} />
+
+  <ol class="mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
+    {steps.map((step, i) => (
+      <li
+        class={`reveal reveal-delay-${i} relative rounded-[var(--radius-card)] border border-line bg-surface p-6 md:p-7`}
+      >
+        <span class="font-mono text-xs text-muted">{String(i + 1).padStart(2, '0')}</span>
+        <span
+          class="mt-4 flex size-11 items-center justify-center rounded-xl bg-accent-soft text-accent"
+          aria-hidden="true"
+        >
+          <step.icon size={20} />
+        </span>
+        <h3 class="font-display mt-5 text-lg font-semibold">{step.title}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-muted">{step.body}</p>
+      </li>
+    ))}
+  </ol>
+</section>

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../sections/Hero.astro';
+import ProofStrip from '../sections/ProofStrip.astro';
+import Approach from '../sections/Approach.astro';
+import Skills from '../sections/Skills.astro';
+import AeonTeaser from '../sections/AeonTeaser.astro';
+import ContactSection from '../sections/ContactSection.astro';
+import ExperienceTimeline from '../sections/ExperienceTimeline.astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import ProjectCard from '../project/ProjectCard.astro';
+import Button from '../ui/Button.astro';
+
+import { useTranslations, localePath } from '../../i18n';
+import { site } from '../../data/site';
+import { personSchema } from '../../lib/schema';
+import { getFeaturedProjects, getSecondaryProjects, getExperience } from '../../lib/content';
+import { ArrowRight } from 'lucide-astro';
+
+interface Props {
+  locale: string;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const featured = await getFeaturedProjects(3);
+const secondary = (await getSecondaryProjects(featured)).slice(0, 4);
+const experience = (await getExperience()).slice(0, 3);
+
+const origin = Astro.site?.origin ?? '';
+const role = locale === 'en' ? site.role.en : site.role.es;
+---
+
+<BaseLayout
+  title={t.meta.homeTitle}
+  description={t.meta.homeDescription}
+  path="/"
+  locale={locale}
+  type="profile"
+  schema={personSchema(origin, role)}
+>
+  <Hero locale={locale} />
+  <ProofStrip locale={locale} />
+
+  <!-- Projects come immediately after the proof strip: within 45 seconds a
+       recruiter should have seen real work, not more prose about it. -->
+  <section class="container-page py-16 md:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionHeader
+        index="01"
+        title={t.projects.sectionTitle}
+        lead={t.projects.sectionLead}
+        class="flex-1"
+      />
+      <Button href={localePath(locale, '/projects')} variant="secondary" class="reveal shrink-0">
+        {t.projects.viewAll}
+        <ArrowRight size={16} aria-hidden="true" />
+      </Button>
+    </div>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {featured.map((project) => (
+        <ProjectCard project={project} locale={locale} />
+      ))}
+    </div>
+
+    {secondary.length > 0 && (
+      <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {secondary.map((project) => (
+          <ProjectCard project={project} locale={locale} variant="compact" />
+        ))}
+      </div>
+    )}
+  </section>
+
+  <!-- Experience before the stack: what he did carries more weight than what he knows. -->
+  <section class="container-page py-16 md:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <SectionHeader
+        index="02"
+        title={t.experience.sectionTitle}
+        lead={t.experience.lead}
+        class="flex-1"
+      />
+      <Button href={localePath(locale, '/experience')} variant="secondary" class="reveal shrink-0">
+        {t.experience.viewAll}
+        <ArrowRight size={16} aria-hidden="true" />
+      </Button>
+    </div>
+
+    <ExperienceTimeline entries={experience} locale={locale} variant="compact" />
+  </section>
+
+  <Approach locale={locale} index="03" />
+  <Skills locale={locale} index="04" />
+  <AeonTeaser locale={locale} index="05" />
+  <ContactSection locale={locale} index="06" />
+</BaseLayout>

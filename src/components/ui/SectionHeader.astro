@@ -1,0 +1,26 @@
+---
+/**
+ * Section heading with a monospaced index number, echoing the blueprint idea.
+ * `as` keeps the heading hierarchy correct per page (h1 on index pages, h2 on home).
+ */
+interface Props {
+  index?: string;
+  title: string;
+  lead?: string;
+  as?: 'h1' | 'h2';
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { index, title, lead, as: Tag = 'h2', align = 'left', class: className = '' } = Astro.props;
+---
+
+<div
+  class={`reveal ${align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'} ${className}`}
+>
+  {index && (
+    <span class="mb-3 block font-mono text-xs tracking-[0.2em] text-accent uppercase">{index}</span>
+  )}
+  <Tag class="text-[length:var(--text-h2)] leading-[1.1]">{title}</Tag>
+  {lead && <p class="mt-4 text-[length:var(--text-lead)] leading-relaxed text-muted">{lead}</p>}
+</div>
