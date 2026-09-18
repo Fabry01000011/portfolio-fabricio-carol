@@ -5,8 +5,6 @@
     "Trabajamos con negocios que necesitan un sistema propio y no encuentran respuesta en una herramienta enlatada. Empresas de transporte, comercios, emprendimientos que crecieron hasta el punto en que la planilla dejó de alcanzar.",
     "Lo que ofrecemos es concreto: entender cómo funciona el negocio, construir el sistema que le falta y acompañarlo después de la entrega. Si un proyecto no entra en lo que podemos hacer bien, lo decimos antes de empezar."
   ],
-  "facts": [],
-  "gallery": [],
   "services": [
     {
       "title": "Sistemas de gestión a medida",
@@ -114,6 +112,26 @@
           "description": "A system that is delivered and abandoned stops being useful quickly. We remain available for adjustments and improvements."
         }
       ]
+    },
+    "pt": {
+      "body": [],
+      "services": [],
+      "steps": []
+    },
+    "fr": {
+      "body": [],
+      "services": [],
+      "steps": []
+    },
+    "de": {
+      "body": [],
+      "services": [],
+      "steps": []
+    },
+    "it": {
+      "body": [],
+      "services": [],
+      "steps": []
     }
   }
 }

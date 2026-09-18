@@ -37,6 +37,45 @@ const experienceTranslation = () =>
     summary: fields.text({ label: 'Resumen', multiline: true }),
   });
 
+const aboutTranslation = () =>
+  fields.object({
+    title: fields.text({ label: 'Título' }),
+    body: fields.array(fields.text({ label: 'Párrafo', multiline: true }), {
+      label: 'Texto',
+      itemLabel: (props) => props.value.slice(0, 60),
+    }),
+    facts: fields.array(
+      fields.object({
+        label: fields.text({ label: 'Etiqueta' }),
+        value: fields.text({ label: 'Valor' }),
+      }),
+      { label: 'Datos', itemLabel: (props) => props.fields.label.value },
+    ),
+  });
+
+const aeonTranslation = () =>
+  fields.object({
+    body: fields.array(fields.text({ label: 'Párrafo', multiline: true }), {
+      label: 'Texto',
+      itemLabel: (props) => props.value.slice(0, 60),
+    }),
+    services: fields.array(
+      fields.object({
+        title: fields.text({ label: 'Servicio' }),
+        description: fields.text({ label: 'Descripción', multiline: true }),
+        icon: fields.text({ label: 'Ícono' }),
+      }),
+      { label: 'Servicios', itemLabel: (props) => props.fields.title.value },
+    ),
+    steps: fields.array(
+      fields.object({
+        title: fields.text({ label: 'Paso' }),
+        description: fields.text({ label: 'Descripción', multiline: true }),
+      }),
+      { label: 'Proceso', itemLabel: (props) => props.fields.title.value },
+    ),
+  });
+
 export default config({
   storage: { kind: 'local' },
 
@@ -354,6 +393,16 @@ export default config({
           }),
           { label: 'Datos', itemLabel: (props) => props.fields.label.value },
         ),
+        i18n: fields.object(
+          {
+            en: aboutTranslation(),
+            pt: aboutTranslation(),
+            fr: aboutTranslation(),
+            de: aboutTranslation(),
+            it: aboutTranslation(),
+          },
+          { label: 'Traducciones' },
+        ),
       },
     }),
 
@@ -392,6 +441,16 @@ export default config({
             description: fields.text({ label: 'Descripción', multiline: true }),
           }),
           { label: 'Proceso', itemLabel: (props) => props.fields.title.value },
+        ),
+        i18n: fields.object(
+          {
+            en: aeonTranslation(),
+            pt: aeonTranslation(),
+            fr: aeonTranslation(),
+            de: aeonTranslation(),
+            it: aeonTranslation(),
+          },
+          { label: 'Traducciones' },
         ),
       },
     }),

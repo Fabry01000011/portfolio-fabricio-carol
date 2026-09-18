@@ -9,14 +9,24 @@
     "Hoy combino mi trabajo como developer con ÆON Software Solutions, donde desarrollamos software para clientes junto a mis socios."
   ],
   "facts": [
-    { "label": "Formación", "value": "Técnico Superior en Desarrollo de Software (ITSE)" },
-    { "label": "Base", "value": "Córdoba, Argentina" },
-    { "label": "Desarrollando desde", "value": "2020" },
-    { "label": "Idiomas", "value": "Español nativo · Inglés intermedio · Portugués intermedio" }
+    {
+      "label": "Formación",
+      "value": "Técnico Superior en Desarrollo de Software (ITSE)"
+    },
+    {
+      "label": "Base",
+      "value": "Córdoba, Argentina"
+    },
+    {
+      "label": "Desarrollando desde",
+      "value": "2020"
+    },
+    {
+      "label": "Idiomas",
+      "value": "Español nativo · Inglés intermedio · Portugués intermedio"
+    }
   ],
   "gallery": [],
-  "services": [],
-  "steps": [],
   "i18n": {
     "en": {
       "title": "About me",
@@ -29,10 +39,22 @@
         "Today I combine my work as a developer with ÆON Software Solutions, where my partners and I build software for clients."
       ],
       "facts": [
-        { "label": "Education", "value": "Software Development Technician (ITSE)" },
-        { "label": "Based in", "value": "Córdoba, Argentina" },
-        { "label": "Building since", "value": "2020" },
-        { "label": "Languages", "value": "Native Spanish · Intermediate English · Intermediate Portuguese" }
+        {
+          "label": "Education",
+          "value": "Software Development Technician (ITSE)"
+        },
+        {
+          "label": "Based in",
+          "value": "Córdoba, Argentina"
+        },
+        {
+          "label": "Building since",
+          "value": "2020"
+        },
+        {
+          "label": "Languages",
+          "value": "Native Spanish · Intermediate English · Intermediate Portuguese"
+        }
       ]
     }
   }

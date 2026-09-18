@@ -7,8 +7,17 @@
   "draft": true,
   "year": "2026",
   "status": "En desarrollo",
-  "categories": ["Producto", "Equipos", "Gestión"],
-  "technologies": ["typescript", "react", "node", "postgresql"],
+  "categories": [
+    "Producto",
+    "Equipos",
+    "Gestión"
+  ],
+  "technologies": [
+    "typescript",
+    "react",
+    "node",
+    "postgresql"
+  ],
   "problem": "Los equipos adoptan Scrum o Kanban y el tablero se desactualiza a las pocas semanas. No porque la metodología falle, sino porque mantener el tablero al día es trabajo que nadie ve y que no le devuelve nada a quien lo hace. Cuando el tablero miente, las ceremonias se vuelven una formalidad.",
   "solution": "Una herramienta que hace visible el aporte de cada persona al flujo del equipo y no solo la cantidad de tareas cerradas. Los logros y el seguimiento están puestos donde normalmente no hay retorno: mantener la información actualizada, desbloquear a un compañero, cerrar lo empezado antes de tomar algo nuevo.",
   "role": "Pendiente de completar.",
@@ -39,18 +48,41 @@
   "results": [],
   "architecture": {
     "nodes": [
-      { "id": "app", "label": "Aplicación", "kind": "frontend", "description": "Tablero y sprints" },
-      { "id": "api", "label": "API", "kind": "api" },
-      { "id": "db", "label": "Base de datos", "kind": "database", "description": "Equipos · tareas · sprints" }
+      {
+        "id": "app",
+        "label": "Aplicación",
+        "kind": "frontend",
+        "description": "Tablero y sprints"
+      },
+      {
+        "id": "api",
+        "label": "API",
+        "kind": "api"
+      },
+      {
+        "id": "db",
+        "label": "Base de datos",
+        "kind": "database",
+        "description": "Equipos · tareas · sprints"
+      }
     ],
     "edges": [
-      { "from": "app", "to": "api" },
-      { "from": "api", "to": "db" }
+      {
+        "from": "app",
+        "to": "api"
+      },
+      {
+        "from": "api",
+        "to": "db"
+      }
     ],
     "note": "Diagrama preliminar: se completa al cerrar la implementación."
   },
+  "cover": "/src/assets/projects/more-agile/cover.png",
   "gallery": [],
-  "links": { "extra": [] },
+  "links": {
+    "extra": []
+  },
   "repoStatus": "none",
   "aeon": false,
   "i18n": {
@@ -58,6 +90,10 @@
       "tagline": "Tracking tool for teams working with Scrum and Kanban.",
       "summary": "A platform for managing an agile team's work: board, sprints and progress tracking, with an achievement system designed to sustain the habit of keeping the board up to date.",
       "role": "To be completed."
-    }
+    },
+    "pt": {},
+    "fr": {},
+    "de": {},
+    "it": {}
   }
 }
