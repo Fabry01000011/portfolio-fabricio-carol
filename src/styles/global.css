@@ -6,26 +6,50 @@
 @import '@fontsource-variable/jetbrains-mono';
 
 /* ── Design tokens ────────────────────────────────────────────────────────
-   "Blueprint": warm paper, dot grid, cobalt accent, acid lime used sparingly.
-   Every colour is declared once here and consumed through Tailwind utilities. */
+   Monokai. Dark mode is Monokai Classic; light mode is its warm-paper
+   counterpart, built by inverting the same hues instead of borrowing a
+   different palette.
+
+   Every colour the site uses is declared here and nowhere else, so swapping the
+   whole theme means editing these two blocks.
+
+   Monokai's own values are tuned for code, not for body text: its comment grey
+   (#75715e) reads at 3.0:1 on the editor background, well under the 4.5:1 that
+   secondary text needs, and its green (#a6e22e) sits at 1.5:1 on paper. Both are
+   adjusted below to the nearest value in the same hue that passes, with the
+   measured ratio noted. The palette stays recognisably Monokai; it just stays
+   readable too. */
 @theme {
   --font-display: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
 
-  --color-bg: #f7f7f4;
+  /* ── Light: Monokai on paper ── */
+  --color-bg: #fafaf5;
   --color-surface: #ffffff;
-  --color-surface-2: #f1f1ec;
-  --color-ink: #0f172a;
-  --color-muted: #5b6478;
-  --color-line: #e3e4de;
-  --color-accent: #2f55ff;
-  --color-accent-soft: #e8ecff;
-  /* Text on an accent fill. Dark mode lightens the accent, so white text would
-     drop to ~3:1 there; deep navy keeps every primary button readable. */
+  --color-surface-2: #f2f1e8;
+  /* Monokai's background becomes the ink. 14.2:1 */
+  --color-ink: #272822;
+  /* Darkened from Monokai's comment grey. 6.2:1 */
+  --color-muted: #625e50;
+  --color-line: #e2e0d4;
+  /* Monokai green darkened until it holds as link text. 5.3:1 */
+  --color-accent: #4f7300;
+  --color-accent-soft: #eaf3d2;
+  /* Text on an accent fill. 5.6:1 */
   --color-on-accent: #ffffff;
-  --color-lime: #d8f45a;
-  --color-ok: #16a34a;
+  /* Monokai yellow, used only for text selection. */
+  --color-lime: #f4bf75;
+  --color-ok: #3f7a00;
+
+  /* Layer colours for technology chips and architecture diagrams. Monokai's
+     syntax hues, darkened here so they stay visible on paper. */
+  --color-layer-language: #b81a5b;
+  --color-layer-backend: #6a3ec7;
+  --color-layer-database: #0f766e;
+  --color-layer-frontend: #b45309;
+  --color-layer-infra: #5f5c4e;
+  --color-layer-practice: #8a6100;
 
   --radius-card: 0.75rem;
 
@@ -38,21 +62,33 @@
   --text-lead: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem);
 }
 
-/* Dark mode: deep navy, never pure black. Driven by the `dark` class on <html>,
-   which an inline head script sets from storage or prefers-color-scheme. */
+/* Dark mode: Monokai Classic, unchanged where it already passes. Driven by the
+   `dark` class on <html>, which an inline head script sets from storage or from
+   the system preference, and re-applies after every client-side navigation. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
-  --color-bg: #0b1020;
-  --color-surface: #121a2e;
-  --color-surface-2: #172242;
-  --color-ink: #e8eaf2;
-  --color-muted: #9aa3b8;
-  --color-line: #233049;
-  --color-accent: #6c8cff;
-  --color-accent-soft: #1b2649;
-  --color-on-accent: #0b1020;
-  --color-ok: #4ade80;
+  --color-bg: #272822;
+  --color-surface: #3e3d32;
+  --color-surface-2: #49483e;
+  --color-ink: #f8f8f2;
+  /* Lightened from #75715e, which fails inside cards. 7.4:1 on the background,
+     4.6:1 on the lightest surface. */
+  --color-muted: #bdb7a5;
+  --color-line: #49483e;
+  /* Monokai green, exactly as it ships. 9.6:1 */
+  --color-accent: #a6e22e;
+  --color-accent-soft: #343a22;
+  /* 9.6:1 */
+  --color-on-accent: #272822;
+  --color-ok: #a6e22e;
+
+  --color-layer-language: #ff6188;
+  --color-layer-backend: #ae81ff;
+  --color-layer-database: #66d9ef;
+  --color-layer-frontend: #fd971f;
+  --color-layer-infra: #a8a290;
+  --color-layer-practice: #f4bf75;
 }
 
 @layer base {
@@ -102,7 +138,9 @@
 
   ::selection {
     background-color: var(--color-lime);
-    color: #0f172a;
+    /* Fixed rather than tokenised: the highlight keeps the same yellow in both
+       themes, so the text on it must stay dark in both. 8.9:1 */
+    color: #272822;
   }
 }
 

@@ -1,9 +1,13 @@
 ---
-import type { Tech, TechLayer } from '../../data/tech';
+import type { Tech } from '../../data/tech';
 
 /**
  * A technology shown as a labelled chip with a layer-coloured dot.
  * Deliberately not a logo: a wall of brand logos says nothing about depth.
+ *
+ * The dot reads its colour from a theme token rather than a fixed hex, so the
+ * bright Monokai hues of dark mode become their darker counterparts on paper.
+ * The label carries the meaning; the dot only groups.
  */
 interface Props {
   tech: Tech;
@@ -11,16 +15,6 @@ interface Props {
 }
 
 const { tech, size = 'md' } = Astro.props;
-
-/** One hue per architectural layer, so the same colour always means the same thing. */
-const layerColour: Record<TechLayer, string> = {
-  language: '#2f55ff',
-  backend: '#7c3aed',
-  database: '#0d9488',
-  frontend: '#ea580c',
-  infra: '#64748b',
-  practice: '#b45309',
-};
 
 const sizes = {
   sm: 'px-2.5 py-1 text-xs gap-1.5',
@@ -33,8 +27,7 @@ const sizes = {
 >
   <span
     class="size-1.5 shrink-0 rounded-full"
-    style={`background-color: ${layerColour[tech.layer]}`}
-    aria-hidden="true"
-  ></span>
+    style={`background-color: var(--color-layer-${tech.layer})`}
+    aria-hidden="true"></span>
   {tech.name}
 </span>

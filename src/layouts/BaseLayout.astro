@@ -73,15 +73,26 @@ const langTag = LOCALE_TAGS[locale as keyof typeof LOCALE_TAGS] ?? 'es-AR';
       // Also drops the `no-js` class, which is what keeps reveal animations
       // from hiding content for visitors without JavaScript.
       (function () {
-        const root = document.documentElement;
-        root.classList.remove('no-js');
-        try {
-          const stored = localStorage.getItem('theme');
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (stored === 'dark' || (!stored && prefersDark)) root.classList.add('dark');
-        } catch {
-          // Storage unavailable: fall back to the light theme.
+        function applyTheme() {
+          const root = document.documentElement;
+          root.classList.remove('no-js');
+          try {
+            const stored = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            root.classList.toggle('dark', stored === 'dark' || (!stored && prefersDark));
+          } catch {
+            // Storage unavailable: fall back to the light theme.
+          }
         }
+
+        applyTheme();
+
+        // Client-side navigation swaps the <html> element's attributes for those
+        // of the incoming page, which was rendered without the theme class — so
+        // the theme would be lost on every link click even though the choice is
+        // still stored. `astro:after-swap` runs after the swap and before paint,
+        // which is the only place this can be restored without a flash.
+        document.addEventListener('astro:after-swap', applyTheme);
       })();
     </script>
     <ClientRouter />

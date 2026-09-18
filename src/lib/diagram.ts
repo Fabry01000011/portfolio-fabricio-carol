@@ -225,16 +225,22 @@ export function layoutDiagram(
   return { nodes: positioned, edges: positionedEdges, width, height };
 }
 
-/** Node colours by role. Same palette language as the technology chips. */
+/**
+ * Maps a node's role to the theme token that colours it.
+ *
+ * Tokens rather than fixed hex values: the diagram has to stay legible in both
+ * themes, and Monokai's bright syntax hues wash out on paper. The token flips
+ * with the theme; the component never knows which palette is active.
+ */
 export const nodeStyles: Record<DiagramNode['kind'], { accent: string; label: string }> = {
-  client: { accent: '#64748b', label: 'Cliente' },
-  frontend: { accent: '#ea580c', label: 'Frontend' },
-  api: { accent: '#2f55ff', label: 'API' },
-  service: { accent: '#7c3aed', label: 'Servicio' },
-  worker: { accent: '#7c3aed', label: 'Worker' },
-  database: { accent: '#0d9488', label: 'Datos' },
-  storage: { accent: '#0d9488', label: 'Archivos' },
-  external: { accent: '#b45309', label: 'Externo' },
+  client: { accent: 'var(--color-layer-infra)', label: 'Cliente' },
+  frontend: { accent: 'var(--color-layer-frontend)', label: 'Frontend' },
+  api: { accent: 'var(--color-layer-language)', label: 'API' },
+  service: { accent: 'var(--color-layer-backend)', label: 'Servicio' },
+  worker: { accent: 'var(--color-layer-backend)', label: 'Worker' },
+  database: { accent: 'var(--color-layer-database)', label: 'Datos' },
+  storage: { accent: 'var(--color-layer-database)', label: 'Archivos' },
+  external: { accent: 'var(--color-layer-practice)', label: 'Externo' },
 };
 
 /**
