@@ -3,8 +3,13 @@
  * Plain .mjs so it can be imported from astro.config.mjs and from TypeScript alike.
  */
 
-/** Production URL. Change once here after connecting the custom domain. */
-export const SITE_URL = 'https://fabriciocarol.vercel.app';
+/**
+ * Production URL. Everything that has to be absolute derives from it: the
+ * canonical link of every page, the sitemap, the hreflang alternates and the
+ * image used when the site is shared. Change it once here after connecting a
+ * custom domain.
+ */
+export const SITE_URL = 'https://portfolio-fabricio-carol.vercel.app';
 
 export const DEFAULT_LOCALE = 'es';
 
