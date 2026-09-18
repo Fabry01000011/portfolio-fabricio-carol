@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArchitectureDiagram from '../project/ArchitectureDiagram.astro';
 import RepoBadge from '../project/RepoBadge.astro';
@@ -42,6 +42,19 @@ const metaItems = [
   data.team && { label: t.project.team, value: data.team },
 ].filter(Boolean) as { label: string; value: string }[];
 
+/**
+ * Social card image, resized at build time.
+ *
+ * The raw cover cannot be used: an upload straight from a camera or a design
+ * tool runs to several megabytes, and LinkedIn, X and Facebook all reject
+ * images above roughly 5 MB, which means no preview at all. This produces the
+ * 1200x630 those platforms crop to, as JPEG for the widest compatibility.
+ */
+const ogImage = data.cover
+  ? (await getImage({ src: data.cover, width: 1200, height: 630, fit: 'cover', format: 'jpeg' }))
+      .src
+  : undefined;
+
 const sections = [
   data.problem && { title: t.project.problem, body: data.problem },
   data.solution && { title: t.project.solution, body: data.solution },
@@ -55,7 +68,7 @@ const sections = [
   path={path}
   locale={locale}
   type="article"
-  image={data.cover?.src}
+  image={ogImage}
   schema={[
     projectSchema(
       origin,

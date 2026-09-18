@@ -13,7 +13,15 @@ import { SITE_URL, LOCALES, DEFAULT_LOCALE } from './src/config/site.mjs';
 export default defineConfig({
   site: SITE_URL,
   output: 'static',
-  adapter: vercel({ imageService: true }),
+  /**
+   * `imageService` is deliberately off. With it on, Astro stops optimising at
+   * build time and defers every image to Vercel's runtime transform: the markup
+   * then asks for a 3840px copy at quality 100 for a card that renders at 400px,
+   * the local preview cannot resolve those URLs at all, and the transforms are
+   * metered. This site is static with a handful of images, so it is both faster
+   * and simpler to generate the sizes once, during the build.
+   */
+  adapter: vercel(),
 
   i18n: {
     locales: [...LOCALES],
